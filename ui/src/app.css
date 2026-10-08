@@ -1,0 +1,139 @@
+/* =============================================================================
+ *  SysPulse - Multipurpose System Utility
+ *  File   : ui/src/app.css
+ *  Author : Praneeth
+ *  License: MIT
+ *  Purpose: Global design tokens (dark default + light theme) and base styles.
+ * ========================================================================== */
+
+:root {
+  color-scheme: dark;
+  --font-sans: "Inter", "Ubuntu", "Cantarell", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Ubuntu Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* Surfaces */
+  --bg: #0e0f12;
+  --surface-1: #16181d;
+  --surface-2: #1d2027;
+  --surface-3: #262a33;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  /* Text */
+  --text-primary: #f4f5f7;
+  --text-secondary: #b5b9c3;
+  --text-muted: #7c818d;
+
+  /* Accent + categorical series (validated dark steps) */
+  --accent: #3987e5;
+  --series-1: #3987e5; /* blue    – CPU            */
+  --series-2: #d95926; /* orange  – Memory         */
+  --series-3: #199e70; /* aqua    – Network / RX   */
+  --series-4: #c98500; /* yellow  – Disk           */
+  --series-5: #d55181; /* magenta – Swap / TX      */
+  --series-6: #008300; /* green                    */
+  --series-7: #9085e9; /* violet  – GPU            */
+  --series-8: #e66767; /* red                      */
+
+  /* Status (fixed, always paired with icon/label) */
+  --good: #0ca30c;
+  --warning: #fab219;
+  --serious: #ec835a;
+  --critical: #d03b3b;
+
+  --grid: rgba(255, 255, 255, 0.06);
+  /* No box-shadows: WebKitGTK re-rasterises them on every telemetry update
+     (measured: ~14% CPU with shadows vs ~3% without). Borders define cards. */
+  --shadow: none;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f3f4f6;
+  --surface-1: #fcfcfb;
+  --surface-2: #f2f3f5;
+  --surface-3: #e6e8ec;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.16);
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #85858a;
+  --accent: #2a78d6;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #4a3aa7;
+  --series-8: #e34948;
+  --grid: rgba(0, 0, 0, 0.06);
+  --shadow: none;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* Flat background on purpose: full-window gradients cost ~7% CPU in WebKitGTK. */
+body { background: var(--bg); }
+
+#app { height: 100%; }
+
+h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.01em; }
+h1 { font-size: 22px; }
+h2 { font-size: 16px; }
+h3 { font-size: 14px; }
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  transition: background 0.15s, border-color 0.15s, transform 0.05s;
+}
+button:hover:not(:disabled) { background: var(--surface-3); }
+button:active:not(:disabled) { transform: translateY(1px); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button.primary { background: var(--accent); border-color: transparent; color: #fff; }
+button.danger { background: var(--critical); border-color: transparent; color: #fff; }
+button.ghost { background: transparent; border-color: transparent; }
+
+input, select {
+  font: inherit;
+  color: var(--text-primary);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  outline: none;
+}
+input:focus, select:focus { border-color: var(--accent); }
+
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--text-muted); }
+.secondary { color: var(--text-secondary); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* uPlot theming */
+.uplot { font-family: var(--font-sans); }
+.u-legend { display: none; }
+.u-axis { color: var(--text-muted); }

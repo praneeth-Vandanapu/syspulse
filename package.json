@@ -1,0 +1,18 @@
+{
+  "name": "syspulse",
+  "private": true,
+  "version": "0.6.0",
+  "description": "SysPulse - multipurpose system monitor and utility for Ubuntu",
+  "author": "Praneeth",
+  "license": "MIT",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "ui:dev": "npm --prefix ui run dev",
+    "ui:check": "npm --prefix ui run check"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.0"
+  }
+}

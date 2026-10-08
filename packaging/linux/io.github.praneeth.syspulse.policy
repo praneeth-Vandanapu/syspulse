@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SysPulse - Multipurpose System Utility
+  File   : packaging/linux/io.github.praneeth.syspulse.policy
+  Author : Praneeth
+  License: MIT
+  Purpose: polkit action for the privileged helper. auth_admin_keep lets one
+           password entry cover several operations for a few minutes.
+-->
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+  <vendor>SysPulse (Praneeth)</vendor>
+  <vendor_url>https://github.com/praneeth/syspulse</vendor_url>
+  <icon_name>syspulse</icon_name>
+  <action id="io.github.praneeth.syspulse.helper">
+    <description>Run SysPulse system maintenance tasks</description>
+    <message>SysPulse needs administrator rights to manage packages, system caches or other users' processes</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/syspulse-helper</annotate>
+  </action>
+</policyconfig>

@@ -1,0 +1,30 @@
+# =============================================================================
+#  SysPulse - Multipurpose System Utility
+#  File   : Cargo.toml (workspace root)
+#  Author : Praneeth
+#  License: MIT
+# =============================================================================
+[workspace]
+resolver = "2"
+members = ["crates/core", "src-tauri"]
+
+[workspace.package]
+version = "0.6.0"
+edition = "2021"
+authors = ["Praneeth"]
+license = "MIT"
+repository = "https://github.com/praneeth/syspulse"
+rust-version = "1.77"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+log = "0.4"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

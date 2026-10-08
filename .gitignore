@@ -1,0 +1,12 @@
+# SysPulse - Author: Praneeth
+/target/
+**/target/
+ui/node_modules/
+ui/dist/
+src-tauri/gen/
+*.log
+.DS_Store
+.vscode/
+.idea/
+node_modules/
+.claude/

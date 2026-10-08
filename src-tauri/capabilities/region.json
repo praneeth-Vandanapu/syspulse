@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "region-picker",
+  "description": "Full-screen region picker of the screen recorder (author: Praneeth)",
+  "windows": ["region"],
+  "permissions": ["core:default"]
+}
