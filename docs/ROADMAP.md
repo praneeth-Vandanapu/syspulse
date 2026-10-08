@@ -57,7 +57,7 @@
 - [x] Owning application per connection; host names from DNS / SNI / Host
 - [x] Views: packets (virtual list, tree ↔ hex, plain-English summary), conversations, applications, RTP streams, statistics, insights; Follow TCP/UDP stream
 - [x] Optional tshark decode and "open in Wireshark"
-- [ ] Later: TLS key-log decryption (SSLKEYLOGFILE), QUIC Initial SNI, HTTP object export, ring-buffer capture to disk, Modbus/MQTT decoders, Windows (Npcap)
+- [ ] Later: TLS key-log decryption (SSLKEYLOGFILE), QUIC Initial SNI, HTTP object export, ring-buffer capture to disk, Modbus/MQTT decoders
 
 ## Phase 3b — Later
 - [ ] Long-term history (SQLite) with day/week charts
@@ -79,8 +79,9 @@
 - [ ] NVENC on GStreamer 1.20 + new NVIDIA drivers (needs GStreamer ≥ 1.22 or an ffmpeg backend)
 - [ ] Webcam overlay, click highlighting, trimming, configurable hotkeys
 
-## Phase 5 — Windows port
-- [ ] WMI-based hardware inventory, DXGI GPU metrics
-- [ ] Registry + winget software manager
-- [ ] Windows Graphics Capture recorder
-- [ ] MSI installer, code signing
+## Phase 5 — Linux platform coverage
+- [ ] Wayland screen recording (PipeWire / xdg-desktop-portal)
+- [ ] Other distributions: Debian, Linux Mint, Fedora (RPM package)
+- [ ] AppImage with working admin actions (helper installed outside the read-only image)
+
+> SysPulse is a **Linux-only** project. A Windows port was considered and dropped (decision of 8 October 2026).

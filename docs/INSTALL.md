@@ -186,7 +186,7 @@ Workspace `Cargo.toml` → `crates/core` (library) and `src-tauri` (application 
 | `nix` | 0.31 | Signals, user/group info |
 | `libc` | 0.2 | `setpriority`, `getsockopt(TCP_INFO)`, `access`, `openpty` |
 | `jwalk` | 0.9 | Parallel directory walking (large files, search, cleaner) |
-| `trash` | 5.2 | Move to Trash (freedesktop spec / Windows Recycle Bin) |
+| `trash` | 5.2 | Move to Trash (freedesktop spec) |
 | `regex` | 1.13 | File-search patterns |
 | `serialport` | 4.10 | Serial ports for PacketForge |
 | `rayon` | 1 | Parallel display-filter evaluation in NetLens |

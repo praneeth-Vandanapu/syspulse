@@ -8,7 +8,7 @@
 
 **Author:** Praneeth · **Version:** 0.6.0 · **License:** MIT
 
-SysPulse is an open-source, all-in-one system utility for Ubuntu 22.04+. It combines the following, with a Windows port planned:
+SysPulse is an open-source, all-in-one system utility for Ubuntu 22.04+. It is a Linux-only project. It combines the following:
 
 - System monitor and GPU monitor
 - Hardware inventory and process manager
@@ -39,7 +39,7 @@ This document explains **how it is built and why**. Installation is in [INSTALL.
 13. [Persistence and configuration](#13-persistence-and-configuration)
 14. [Testing strategy](#14-testing-strategy)
 15. [Packaging](#15-packaging)
-16. [Portability (Windows port)](#16-portability-windows-port)
+16. [Platform scope](#16-platform-scope)
 17. [Known limitations](#17-known-limitations)
 18. [Coding conventions](#18-coding-conventions)
 
@@ -52,7 +52,7 @@ This document explains **how it is built and why**. Installation is in [INSTALL.
 | **Light** — a monitor must not be a load itself | Native Rust backend, OS webview (no bundled browser), push-based telemetry; the UI idles at ~3% of one core |
 | **Safe** — the app can delete files, kill processes and change networks | GUI never runs as root; a tiny helper runs allow-listed operations behind the polkit password dialog; destructive actions show a preview and ask for confirmation |
 | **Honest** — no fake data | Every reading comes from the kernel or system tools; missing data is shown as "—" or "not available" |
-| **Portable** — Windows later | OS logic lives in one Rust library behind small interfaces; the UI and command layer are shared |
+| **Maintainable** — Linux first | OS logic lives in one Rust library behind small interfaces; the UI and command layer only call that library |
 | **Maintainable** | One crate per concern, unit-tested, zero clippy warnings, every file carries an author header |
 
 ---
@@ -62,7 +62,7 @@ This document explains **how it is built and why**. Installation is in [INSTALL.
 | Layer | Technology | Version | Why this choice |
 |---|---|---|---|
 | Core logic | **Rust** (`syspulse-core` crate) | 1.99 | C-level speed, memory safety for privileged code, excellent system crates |
-| Desktop shell | **Tauri 2** | 2.12 | Uses the OS webview (WebKitGTK): ~40 MB RAM vs 300 MB+ for Electron; Linux + Windows |
+| Desktop shell | **Tauri 2** | 2.12 | Uses the OS webview (WebKitGTK): ~40 MB RAM vs 300 MB+ for Electron |
 | UI framework | **Svelte 5** (runes) + TypeScript | 5.57 / 5.6 | No virtual DOM, fine-grained reactivity for 1 Hz updates, small bundles |
 | Build | **Vite** | 6.4 | Instant dev server and HMR |
 | Charts | **uPlot** + hand-written SVG / HTML | 1.6.32 | Canvas time series that draws thousands of points in milliseconds; gauges, sparklines and treemap are custom |
@@ -72,11 +72,11 @@ This document explains **how it is built and why**. Installation is in [INSTALL.
 | Hardware | sysfs, procfs, `pci.ids`, `usb.ids`, EDID | — | Works without root |
 | Packages | dpkg database, snapd REST socket, `flatpak` CLI | — | Fast (2,500 packages in < 0.1 s) |
 | Filesystem walking | `jwalk` (parallel) | 0.9 | ~1.7 M files in ~3 s; per-entry work runs on worker threads |
-| Trash | `trash` | 5.2 | freedesktop Trash spec (and Windows Recycle Bin later) |
+| Trash | `trash` | 5.2 | freedesktop Trash spec (files can be restored from the Trash) |
 | Search patterns | `regex` | 1.13 | Regex and wildcard file-name matching |
 | systemd | `systemctl --output=json`, `journalctl` | systemd 249 | Stable, scriptable interfaces |
 | Networking | NetworkManager `nmcli`, `/proc/net/*`, `ping`, `tracepath` | NM 1.36 | Same backend as Ubuntu Settings |
-| Speed test | Own TCP/UDP protocol in Rust (`std::net`) | — | iperf-style tests between two SysPulse instances; Windows-portable |
+| Speed test | Own TCP/UDP protocol in Rust (`std::net`) | — | iperf-style tests between two SysPulse instances |
 | Serial | `serialport` (libudev) | 4.10 | USB adapter names and serial numbers, modem lines |
 | Packet capture | Linux `AF_PACKET` sockets in a capability-limited helper (`syspulse-capture`); BPF filters compiled by the system **libpcap** (loaded with `dlopen`) | libpcap 1.10 | Same kernel interface as tcpdump/Wireshark; no build-time libpcap needed |
 | Protocol analysis | Own Rust dissectors (NetLens) + optional **tshark** | — | Fast, safe on hostile input; Wireshark's 3000+ decoders on demand |
@@ -509,10 +509,13 @@ NetLens sends no events: its UI pulls status and visible rows (see [9](#9-data-f
 
 ---
 
-## 16. Portability (Windows port)
+## 16. Platform scope
 
-| Area | Linux today | Windows plan |
-|---|---|---|
+SysPulse targets **Linux only** (Ubuntu 22.04 and newer; other Debian-based distributions are likely to work). A Windows port was evaluated and dropped, so the code is free to use Linux interfaces directly: procfs and sysfs, NetworkManager, systemd, dpkg/Snap/Flatpak, polkit, `AF_PACKET` with file capabilities, X11 and PulseAudio/PipeWire.
+
+Planned Linux coverage: Wayland screen recording through PipeWire, and packages for other distributions (see the roadmap).
+
+---|---|---|
 | Metrics | `sysinfo` + procfs | `sysinfo` + PDH (shared code) |
 | GPU | NVML + DRM sysfs | NVML + DXGI / D3DKMT |
 | Hardware | sysfs | WMI |
