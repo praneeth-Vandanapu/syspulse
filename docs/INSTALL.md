@@ -285,7 +285,7 @@ Recordings in `~/Videos/SysPulse` are not removed.
 
 | Symptom | Cause / fix |
 |---|---|
-| Layout looks broken in `npm run dev` | Vite served a stale stylesheet after a restart. Touch `src-tauri/src/main.rs` or restart `npm run dev`. Packaged builds are not affected |
+| Layout looks broken in `npm run dev`, terminal shows `[postcss] … Unknown word SysPulse` | Fixed in `ui/vite.config.ts` (development builds inject component styles instead of serving them separately). If you still see it with an older copy, restart `npm run dev`. Packaged builds were never affected |
 | "Port 1420 is already in use" | Another `npm run dev` is still running; stop it first |
 | GPU page shows no NVIDIA data | NVML missing (no proprietary driver) or the dGPU is asleep. SysPulse never wakes a suspended GPU |
 | Recorder: "No working GPU encoder" | GStreamer 1.20's NVENC plugin does not support NVIDIA drivers ≥ 5xx. The CPU encoder (x264) is used automatically. Install `gstreamer1.0-vaapi` for Intel/AMD hardware encoding |
