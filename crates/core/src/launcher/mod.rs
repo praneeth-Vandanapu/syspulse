@@ -91,6 +91,8 @@ pub struct ScanResult {
     pub qt_plugin_dir: Option<String>,
     /// Python interpreter of a bundled virtual environment.
     pub venv_python: Option<String>,
+    /// The folder is a PyInstaller bundle (manages its own libraries).
+    pub pyinstaller: bool,
     pub files: usize,
     pub bytes: u64,
     pub truncated: bool,
@@ -329,8 +331,26 @@ fn similar(a: &str, b: &str) -> bool {
     !a.is_empty() && !b.is_empty() && (a.contains(&b) || b.contains(&a))
 }
 
+/// "LauncherTestApp" -> "Launcher Test App" (keeps acronyms like "GUITool" -> "GUI Tool").
+fn split_camel(w: &str) -> String {
+    let c: Vec<char> = w.chars().collect();
+    let mut out = String::new();
+    for (i, &ch) in c.iter().enumerate() {
+        if i > 0 && ch.is_uppercase() {
+            let prev = c[i - 1];
+            let next_lower = c.get(i + 1).is_some_and(|n| n.is_lowercase());
+            if prev.is_lowercase() || prev.is_ascii_digit() || (prev.is_uppercase() && next_lower) {
+                out.push(' ');
+            }
+        }
+        out.push(ch);
+    }
+    out
+}
+
 fn pretty_name(folder: &Path) -> String {
     let base = folder.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+    let base = split_camel(&base);
     // "my_app-1.2.3" -> "My App"
     let cleaned: String = base
         .split(['-', '_', ' ', '.'])
@@ -384,6 +404,10 @@ pub fn scan(folder: &str) -> Result<ScanResult> {
             break;
         }
     }
+
+    // PyInstaller one-folder bundles: <exe> + _internal/base_library.zip
+    // (PyInstaller 6) or base_library.zip next to the exe (PyInstaller 5).
+    let pyinstaller = root.join("_internal/base_library.zip").exists() || root.join("base_library.zip").exists();
 
     let mut stack: Vec<(PathBuf, usize)> = vec![(root.clone(), 0)];
     let mut so_count: HashMap<PathBuf, usize> = HashMap::new();
@@ -513,11 +537,19 @@ pub fn scan(folder: &str) -> Result<ScanResult> {
     }
     for (dir, n) in so_count {
         let s = dir.to_string_lossy().to_string();
-        if !s.contains("site-packages") && !s.contains("/venv/") && !s.contains("/.venv/") && !s.contains("/platforms") && !s.contains("/plugins/") {
+        // Python extension modules are not shared libraries for the loader,
+        // and PyInstaller bundles set up their own library path.
+        let python_internal = s.contains("lib-dynload") || (pyinstaller && (dir.starts_with(root.join("_internal")) || dir == root));
+        if !python_internal && !s.contains("site-packages") && !s.contains("/venv/") && !s.contains("/.venv/") && !s.contains("/platforms") && !s.contains("/plugins/") {
             lib_dirs.push((s, n));
         }
     }
     lib_dirs.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
+    if pyinstaller {
+        for c in candidates.iter_mut().filter(|c| c.kind == AppKind::Native && !c.rel.contains('/')) {
+            c.reason = "Python app (PyInstaller bundle)".into();
+        }
+    }
     candidates.sort_by(|a, b| b.score.cmp(&a.score).then(a.rel.len().cmp(&b.rel.len())));
     candidates.truncate(25);
 
@@ -550,6 +582,7 @@ pub fn scan(folder: &str) -> Result<ScanResult> {
         library_dirs: lib_dirs.into_iter().map(|x| x.0).take(8).collect(),
         qt_plugin_dir,
         venv_python,
+        pyinstaller,
         files,
         bytes,
         truncated,
@@ -1152,5 +1185,7 @@ mod tests {
         assert!(valid_id("my-app-2"));
         assert!(!valid_id("My App"));
         assert_eq!(pretty_name(Path::new("/opt/signal_analyzer-1.2-linux-x64")), "Signal Analyzer");
+        assert_eq!(pretty_name(Path::new("/home/u/LauncherTestApp")), "Launcher Test App");
+        assert_eq!(pretty_name(Path::new("/opt/GUITool2")), "GUI Tool2");
     }
 }

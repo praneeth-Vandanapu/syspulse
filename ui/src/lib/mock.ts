@@ -288,7 +288,7 @@ export async function invoke<T>(cmd: string, args?: Record<string, unknown>): Pr
         suggestedId: "signal-viewer", takenIds: [], suggestedEnv: [{ name: "LD_LIBRARY_PATH", value: "/opt/apps/SignalViewer/lib" }],
         scan: {
           folder: "/opt/apps/SignalViewer", name: "Signal Viewer", files: 214, bytes: 88_000_000, truncated: false,
-          libraryDirs: ["/opt/apps/SignalViewer/lib"], qtPluginDir: null, venvPython: null,
+          libraryDirs: ["/opt/apps/SignalViewer/lib"], qtPluginDir: null, venvPython: null, pyinstaller: false,
           candidates: [
             { path: "/opt/apps/SignalViewer/SignalViewer", rel: "SignalViewer", kind: "native", score: 120, reason: "Native program", executable: true, size: 5_400_000 },
             { path: "/opt/apps/SignalViewer/run.sh", rel: "run.sh", kind: "script", score: 65, reason: "Script", executable: true, size: 120 },

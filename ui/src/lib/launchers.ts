@@ -36,6 +36,7 @@ export interface ScanResult {
   libraryDirs: string[];
   qtPluginDir: string | null;
   venvPython: string | null;
+  pyinstaller: boolean;
   files: number;
   bytes: number;
   truncated: boolean;
