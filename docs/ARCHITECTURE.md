@@ -6,7 +6,7 @@
 -->
 # SysPulse — Architecture, Concepts & Technologies
 
-**Author:** Praneeth · **Version:** 0.6.0 · **License:** MIT
+**Author:** Praneeth · **Version:** 0.7.0 · **License:** MIT
 
 SysPulse is an open-source, all-in-one system utility for Ubuntu 22.04+. It is a Linux-only project. It combines the following:
 

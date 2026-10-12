@@ -6,7 +6,7 @@
 -->
 # SysPulse — User Manual
 
-**Author:** Praneeth · **Version:** 0.6.0
+**Author:** Praneeth · **Version:** 0.7.0
 
 SysPulse shows what your computer is doing and helps you keep it healthy, from one window. This manual walks through every page. For installation see [INSTALL.md](INSTALL.md).
 

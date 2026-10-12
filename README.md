@@ -20,7 +20,7 @@ each packet), a connections view, **App Launchers** (desktop/menu/dock entries f
 from an application folder), a **screen recorder** and desktop alerts. It is built with Rust + Tauri, so it stays light: the UI process idles
 at about 3% of one CPU core.
 
-## Features (v0.6)
+## Features (v0.7)
 
 | Module | What it does |
 |---|---|

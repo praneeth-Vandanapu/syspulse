@@ -1,7 +1,7 @@
 {
   "name": "syspulse",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "SysPulse - multipurpose system monitor and utility for Ubuntu",
   "author": "Praneeth",
   "license": "MIT",

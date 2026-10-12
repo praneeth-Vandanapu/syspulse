@@ -6,7 +6,7 @@
 -->
 # SysPulse — Installation & Required Modules
 
-**Author:** Praneeth · **Version:** 0.6.0 · **License:** MIT
+**Author:** Praneeth · **Version:** 0.7.0 · **License:** MIT
 
 This guide covers:
 
@@ -42,7 +42,7 @@ This guide covers:
 ### Option A — `.deb` package (recommended)
 
 ```bash
-sudo apt install ./SysPulse_0.6.0_amd64.deb
+sudo apt install ./SysPulse_0.7.0_amd64.deb
 ```
 
 `apt` installs every runtime dependency listed in [section 3](#3-runtime-dependencies-explained) automatically. The package installs:
@@ -60,8 +60,8 @@ Start it from the application menu (**SysPulse**) or run `syspulse`.
 ### Option B — AppImage (portable)
 
 ```bash
-chmod +x SysPulse_0.6.0_amd64.AppImage
-./SysPulse_0.6.0_amd64.AppImage
+chmod +x SysPulse_0.7.0_amd64.AppImage
+./SysPulse_0.7.0_amd64.AppImage
 ```
 
 **Limitation:** inside an AppImage the admin helper lives on a FUSE mount that `root` cannot read. Features that need your password (uninstalling software, cleaning system caches, managing system services, ending other users' processes, granting serial-port access, granting NetLens capture permission, creating launchers for other users) therefore only work with the `.deb`. NetLens can still open capture files in the AppImage. Install the runtime packages from [section 3](#3-runtime-dependencies-explained) yourself.

@@ -28,7 +28,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
 OUT = DOCS / "word"
 
-VERSION = "0.6.0"
+VERSION = "0.7.0"
 BODY_FONT = "Calibri"
 MONO_FONT = "Consolas"
 BRAND = RGBColor(0x1F, 0x6F, 0xEB)
