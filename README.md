@@ -16,7 +16,8 @@ and systemd service manager, network settings (IP editing, Wi-Fi), an
 iperf-style speed test between two PCs, network tools, **PacketForge** (a
 TCP / UDP / serial terminal in the spirit of Hercules and Packet Sender),
 **NetLens** (a Wireshark-style packet analyzer that also shows which app sent
-each packet), a connections view, a **screen recorder** and desktop alerts. It is built with Rust + Tauri, so it stays light: the UI process idles
+each packet), a connections view, **App Launchers** (desktop/menu/dock entries for any user
+from an application folder), a **screen recorder** and desktop alerts. It is built with Rust + Tauri, so it stays light: the UI process idles
 at about 3% of one CPU core.
 
 ## Features (v0.6)
@@ -35,6 +36,7 @@ at about 3% of one CPU core.
 | **Startup Apps** | Programs started at login: enable / disable, add, edit, remove |
 | **Network Settings** | Wired and Wi-Fi adapters with live addressing; switch between DHCP and static IPs (several addresses, gateway, DNS, MTU) and apply instantly; Wi-Fi scanner with channel congestion; saved connections |
 | **Speed Test** | Run SysPulse in **Server mode** on one PC and test from another: TCP upload/download/both with parallel streams, retransmits and RTT; UDP at a set bitrate with loss and jitter; latency percentiles; one-click full suite with an exportable report |
+| **App Launchers** | Turn an application folder (C++, Python, AppImage, script, jar) into a start-menu entry, trusted desktop icon and dock pin for any user account; detects the program, icon, bundled libraries and Qt plugins; grants folder access to other users only where needed; live checks, test run, edit and clean removal |
 | **NetLens** | Live capture on any network card (one-time permission) or open pcap/pcapng; virtual packet list, detail tree linked to hex bytes, plain-English summary per packet; Wireshark-style display filters with auto-completion; TCP, UDP, HTTP, HTTPS/TLS (site names), QUIC, RTSP/SDP, RTP/RTCP (camera stream loss, jitter, key frames), DNS, DHCP, ARP, ICMP; conversations, per-application traffic, statistics, insights; Follow Stream; save as pcapng; optional Wireshark/tshark integration |
 | **PacketForge** | TCP client / server, UDP and serial sessions in tabs; traffic as text (C escapes), hex, text+hex, hexdump, decimal or binary with timestamps; framing, highlighting; send text or hex with line endings and checksums (CRC-16, CRC-32, XOR, SUM, LRC), repeat, file send; F-key macros, saved profiles, logging; DTR/RTS and modem-status lines |
 | **Net Tools** | Ping with a live chart, traceroute, DNS lookup, port check |

@@ -64,7 +64,7 @@ chmod +x SysPulse_0.6.0_amd64.AppImage
 ./SysPulse_0.6.0_amd64.AppImage
 ```
 
-**Limitation:** inside an AppImage the admin helper lives on a FUSE mount that `root` cannot read. Features that need your password (uninstalling software, cleaning system caches, managing system services, ending other users' processes, granting serial-port access, granting NetLens capture permission) therefore only work with the `.deb`. NetLens can still open capture files in the AppImage. Install the runtime packages from [section 3](#3-runtime-dependencies-explained) yourself.
+**Limitation:** inside an AppImage the admin helper lives on a FUSE mount that `root` cannot read. Features that need your password (uninstalling software, cleaning system caches, managing system services, ending other users' processes, granting serial-port access, granting NetLens capture permission, creating launchers for other users) therefore only work with the `.deb`. NetLens can still open capture files in the AppImage. Install the runtime packages from [section 3](#3-runtime-dependencies-explained) yourself.
 
 ---
 
@@ -87,6 +87,8 @@ Installed automatically by the `.deb`:
 | `gstreamer1.0-plugins-good` | Recorder | MP4 / MKV / WebM muxers, VP8, level meter, JPEG |
 | `gstreamer1.0-plugins-ugly` | Recorder | `x264enc` (H.264 on the CPU) |
 | `gstreamer1.0-libav` | Recorder | `avenc_aac` (AAC audio) |
+| `acl` | App Launchers | `setfacl` / `getfacl`: give another user access to an application folder |
+| `desktop-file-utils` | App Launchers | Validates launcher files and refreshes the application menu |
 | `libpcap0.8` | NetLens | Compiles capture filters (`tcp port 554`); loaded at run time |
 
 Optional, used when present:
@@ -190,6 +192,7 @@ Workspace `Cargo.toml` → `crates/core` (library) and `src-tauri` (application 
 | `regex` | 1.13 | File-search patterns |
 | `serialport` | 4.10 | Serial ports for PacketForge |
 | `rayon` | 1 | Parallel display-filter evaluation in NetLens |
+| `image` | 0.25 (png, ico, jpeg, bmp) | App Launchers icon conversion to 256×256 PNG |
 | `gstreamer` | 0.25 (feature `v1_20`) | Screen recorder pipelines |
 | `serde`, `serde_json` | 1 | Data model / IPC serialisation |
 | `thiserror` | 2 | Error type |
@@ -263,6 +266,8 @@ Other useful commands:
 | `~/.config/io.github.praneeth.syspulse/packetforge.json` | PacketForge macros, profiles and send history |
 | `~/.local/share/io.github.praneeth.syspulse/` | Web view storage (UI preferences) |
 | `~/Videos/SysPulse/` | Screen recordings (default, changeable) |
+| `~/.config/io.github.praneeth.syspulse/launchers.json` | App Launchers registry (what was created, for whom, folder access granted) |
+| Target users: `~/.local/share/applications/syspulse-*.desktop`, `~/.local/share/icons/…/syspulse-*`, desktop icon | Launchers you create for them (removed with **Remove…**) |
 | `~/.cache/syspulse/netlens/` | Temporary copies for *Open in Wireshark* / *Wireshark decode* (replaced each time) |
 | `~/.config/autostart/*.desktop` | Only when you add or disable startup apps |
 
@@ -296,6 +301,8 @@ Recordings in `~/Videos/SysPulse` are not removed.
 | NetLens: capture filter field disabled | `libpcap0.8` missing: `sudo apt install libpcap0.8` (display filters still work) |
 | NetLens: "Dropped" count in the status bar | The PC could not keep up; use a capture filter or a smaller snap length (Capture options) |
 | NetLens: no RTP streams for a camera | Start capturing **before** the player connects, so NetLens sees the RTSP SETUP that announces the media ports |
+| App Launchers: desktop icon shows "Allow Launching" | The trust flag could not be set (for example the GNOME desktop-icons extension is disabled). Right-click → Allow Launching once, or recreate the launcher while the user is logged in |
+| App Launchers: app does not start for the other user | Open **Edit** and check the Checks panel: folder access, missing libraries, or the program needs write access (enable "let them write in it") |
 | Speed test cannot connect | Server mode not started on the other PC, wrong IP, or firewall — `sudo ufw allow 5201` |
 | Admin actions fail in the AppImage | Use the `.deb` (see [Option B](#option-b--appimage-portable)) |
 | Hotkeys do nothing | Another app owns Ctrl+Alt+R / Ctrl+Alt+P; the tray menu still works. Logs: run `syspulse` from a terminal |

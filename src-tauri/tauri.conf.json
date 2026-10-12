@@ -57,7 +57,9 @@
           "gstreamer1.0-plugins-good",
           "gstreamer1.0-plugins-ugly",
           "gstreamer1.0-libav",
-          "libpcap0.8"
+          "libpcap0.8",
+          "acl",
+          "desktop-file-utils"
         ],
         "files": {
           "/usr/share/polkit-1/actions/io.github.praneeth.syspulse.policy": "../packaging/linux/io.github.praneeth.syspulse.policy"

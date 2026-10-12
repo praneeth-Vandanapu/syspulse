@@ -15,6 +15,7 @@ pub mod fsutil;
 pub mod gpu;
 pub mod hardware;
 pub mod largefiles;
+pub mod launcher;
 pub mod models;
 pub mod monitor;
 pub mod netconfig;

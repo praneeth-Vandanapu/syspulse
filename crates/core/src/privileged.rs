@@ -15,7 +15,10 @@
 //             * file deletion limited to user data locations (fsutil);
 //             * PID 0/1 and the helper itself are never signalled;
 //             * capture capabilities only ever go to the syspulse-capture
-//               binary installed next to the helper.
+//               binary installed next to the helper;
+//             * launchers: files in a user's home are written by that user
+//               (runuser), root only sets the program's execute bit and
+//               folder ACLs; nothing from the app folder runs as root.
 // =============================================================================
 
 use serde::{Deserialize, Serialize};
@@ -56,6 +59,62 @@ pub enum HelperRequest {
     /// The binary path is resolved by the helper, never sent by the caller.
     #[serde(rename_all = "camelCase")]
     SetCaptureAccess { grant: bool },
+    /// Create a launcher (menu, desktop icon, dock) for other user accounts.
+    #[serde(rename_all = "camelCase")]
+    InstallLauncher {
+        spec: Box<crate::launcher::LauncherSpec>,
+        icon: Option<IconPayload>,
+        users: Vec<String>,
+    },
+    /// Remove a launcher from user accounts (optionally revoking access).
+    #[serde(rename_all = "camelCase")]
+    RemoveLauncher {
+        remove: crate::launcher::install::RemoveSpec,
+        users: Vec<String>,
+    },
+}
+
+/// Prepared icon sent to the helper (the helper never reads the source file).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IconPayload {
+    /// "png", "svg" or "xpm"
+    pub ext: String,
+    /// base64
+    pub data: String,
+}
+
+impl IconPayload {
+    pub fn from_icon(i: &crate::launcher::icon::IconData) -> IconPayload {
+        IconPayload {
+            ext: i.extension().to_string(),
+            data: crate::util::base64(i.bytes()),
+        }
+    }
+
+    pub fn decode(&self) -> std::result::Result<crate::launcher::icon::IconData, String> {
+        use crate::launcher::icon::IconData;
+        let b = crate::util::base64_decode(&self.data).ok_or("bad icon data")?;
+        if b.len() > 2 * 1024 * 1024 {
+            return Err("icon too large".into());
+        }
+        match self.ext.as_str() {
+            "png" if b.starts_with(b"\x89PNG\r\n\x1a\n") => Ok(IconData::Png(b)),
+            "svg" if String::from_utf8_lossy(&b[..b.len().min(2048)]).contains("<svg") => Ok(IconData::Svg(b)),
+            "xpm" if b.starts_with(b"/* XPM */") => Ok(IconData::Xpm(b)),
+            _ => Err("unsupported icon format".into()),
+        }
+    }
+}
+
+fn resolve_users(names: &[String]) -> std::result::Result<Vec<crate::launcher::UserAccount>, String> {
+    if names.is_empty() || names.len() > 64 {
+        return Err("choose 1-64 users".into());
+    }
+    names
+        .iter()
+        .map(|n| crate::launcher::find_user(n).ok_or_else(|| format!("unknown or system account: {n}")))
+        .collect()
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -224,6 +283,40 @@ pub fn execute(req: HelperRequest) -> HelperResponse {
             }
         }
         HelperRequest::GrantSerialAccess => grant_serial_access(),
+        HelperRequest::InstallLauncher { spec, icon, users } => {
+            let users = match resolve_users(&users) {
+                Ok(u) => u,
+                Err(e) => return HelperResponse::err(e),
+            };
+            let icon = match icon.map(|i| i.decode()).transpose() {
+                Ok(i) => i,
+                Err(e) => return HelperResponse::err(e),
+            };
+            match crate::launcher::install::install(spec.as_ref(), icon.as_ref(), &users) {
+                Ok(results) => HelperResponse {
+                    ok: results.iter().all(|r| r.ok),
+                    message: format!("launcher {} installed for {}", spec.id, users.len()),
+                    output: serde_json::to_string(&results).unwrap_or_default(),
+                    freed_bytes: 0,
+                },
+                Err(e) => HelperResponse::err(e.to_string()),
+            }
+        }
+        HelperRequest::RemoveLauncher { remove, users } => {
+            let users = match resolve_users(&users) {
+                Ok(u) => u,
+                Err(e) => return HelperResponse::err(e),
+            };
+            match crate::launcher::install::remove(&remove, &users) {
+                Ok(results) => HelperResponse {
+                    ok: results.iter().all(|r| r.ok),
+                    message: format!("launcher {} removed", remove.id),
+                    output: serde_json::to_string(&results).unwrap_or_default(),
+                    freed_bytes: 0,
+                },
+                Err(e) => HelperResponse::err(e.to_string()),
+            }
+        }
         HelperRequest::SetCaptureAccess { grant } => match crate::netlens::capture::set_capture_caps(grant) {
             Ok(m) => HelperResponse::ok(m),
             Err(e) => HelperResponse::err(e),

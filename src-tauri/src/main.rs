@@ -12,6 +12,7 @@
 
 mod commands;
 mod forge;
+mod launchers;
 mod maintenance;
 mod netlens;
 mod network;
@@ -144,6 +145,14 @@ fn main() {
             netlens::netlens_save,
             netlens::netlens_wireshark_decode,
             netlens::netlens_open_wireshark,
+            launchers::launcher_users,
+            launchers::launcher_scan,
+            launchers::launcher_check,
+            launchers::launcher_icon_preview,
+            launchers::launcher_create,
+            launchers::launcher_list,
+            launchers::launcher_remove,
+            launchers::launcher_test_run,
         ])
         .build(tauri::generate_context!())
         .expect("error while building SysPulse");

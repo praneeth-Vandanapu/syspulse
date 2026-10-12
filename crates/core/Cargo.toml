@@ -28,3 +28,4 @@ regex = "1.13.1"
 serialport = "4.10.1"
 gstreamer = { version = "0.25.4", features = ["v1_20"] }
 rayon = "1"
+image = { version = "0.25", default-features = false, features = ["png", "ico", "jpeg", "bmp"] }

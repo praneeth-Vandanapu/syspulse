@@ -31,6 +31,7 @@
   import NetTools from "./pages/NetTools.svelte";
   import PacketForge from "./pages/PacketForge.svelte";
   import NetLens from "./pages/NetLens.svelte";
+  import Launchers from "./pages/Launchers.svelte";
   import Recorder from "./pages/Recorder.svelte";
   import { onEvent } from "./lib/api";
 
@@ -62,6 +63,7 @@
         { id: "hardware", label: "Hardware", icon: "chip" },
         { id: "services", label: "Services", icon: "settings" },
         { id: "startup", label: "Startup Apps", icon: "play" },
+        { id: "launchers", label: "App Launchers", icon: "apps" },
       ],
     },
     {
@@ -145,6 +147,7 @@
     {:else if app.page === "nettools"}<NetTools />
     {:else if app.page === "packetforge"}<PacketForge />
     {:else if app.page === "netlens"}<NetLens />
+    {:else if app.page === "launchers"}<Launchers />
     {:else if app.page === "recorder"}<Recorder />
     {:else if SOON[app.page]}<ComingSoon {...SOON[app.page]} />
     {/if}

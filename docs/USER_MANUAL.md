@@ -17,7 +17,7 @@ SysPulse shows what your computer is doing and helps you keep it healthy, from o
 - [1. Getting started](#1-getting-started)
 - [2. Monitor](#2-monitor) — Dashboard · Performance · GPU · Processes
 - [3. Network](#3-network) — Network Settings · Speed Test · Net Tools · PacketForge · NetLens · Connections
-- [4. System](#4-system) — Hardware · Services · Startup Apps
+- [4. System](#4-system) — Hardware · Services · Startup Apps · App Launchers
 - [5. Maintenance](#5-maintenance) — Software · Cache Cleaner · Large Files · File Search
 - [6. Media](#6-media) — Screen Recorder
 - [7. Settings and alerts](#7-settings-and-alerts)
@@ -361,6 +361,48 @@ Programs that start when you log in.
 
 Changes affect only your account (`~/.config/autostart`).
 
+### 4.4 App Launchers
+
+Turns an application folder — a C++ build, a Python app, a PyInstaller bundle, an AppImage, a script or a Java `.jar` together with all its supporting files — into a normal desktop application for one or more user accounts. Each user gets a **start-menu entry**, a **desktop icon** that works straight away, and optionally a **dock** pin. The users don't have to do anything.
+
+SysPulse is the administrator's tool: you can install a launcher for **other accounts** (for example an operator account without admin rights). That needs your password once per install. Installing only for yourself needs no password.
+
+**Create a launcher:**
+1. Click **New launcher** and choose the application folder. The folder stays where it is: the launcher runs the program from there, with all its files.
+2. **Program to start**: SysPulse lists the programs it found, the most likely one first. Programs built for another processor, libraries, installers and uninstallers are ranked down. Use **Choose another file…** if needed. For Python, SysPulse uses the virtual environment inside the folder if there is one (`venv/`, `.venv/`), otherwise the system `python3`. For `.jar` files it uses `java`.
+3. **Name and icon**: the name comes from the folder name. Icons found in the folder are shown; click one, or **+** to pick any PNG, SVG, ICO, JPG, BMP or XPM file. Icons are converted to a sharp 256×256 PNG automatically.
+4. **Run settings** (optional):
+
+   | Setting | Use |
+   |---|---|
+   | **Arguments** | Extra command-line options. Quotes work as in a terminal |
+   | **Working folder** | Defaults to the program's folder, so programs find files next to them |
+   | **Environment** | Pre-filled when the folder bundles libraries (`LD_LIBRARY_PATH`) or Qt plugins (`QT_PLUGIN_PATH`) |
+   | **Window class** | Optional; makes the dock group the app's window with its icon |
+   | **Run in a terminal** | For console programs |
+
+5. **Who gets it, and where**: tick the users, and choose **Start menu**, **Desktop icon** and **Pin to the dock**.
+   * **Give these users access to the folder if they need it** (on by default): if the folder is in your home, the other users cannot open it. Ubuntu home folders are private. SysPulse then grants read access to that user only, for that folder only (Linux ACLs). The rest of your home stays private.
+   * **…and let them write in it**: for programs that save logs or settings next to themselves.
+6. Watch the **Checks** panel: it shows what will be fixed automatically (blue), warnings (orange) and problems that block creation (red). Examples: the folder cannot be opened by a user, libraries are missing, the program was built for another processor, or Java/Python is not installed. **Desktop file preview** shows the exact launcher file.
+7. **Test run** starts the program now, as you, and shows its output if it fails.
+8. Click **Create launcher** and enter your password if asked. The result lists, per user, everything that was done.
+
+**What is set up for each user:**
+* `~/.local/share/applications/syspulse-<id>.desktop` — the start-menu entry
+* the icon in `~/.local/share/icons/`
+* the same launcher on the user's desktop, **marked as trusted**, so it opens on double-click without "Allow Launching"
+* the dock pin (in the user's GNOME settings)
+
+Users who are not logged in get everything too; the dock pin and desktop icon appear at their next login.
+
+**Change or remove:** the list shows every launcher SysPulse created and for whom. **Edit / add users** opens it again; save to update everyone or add users. **Remove…** takes the menu entry, desktop icon, icon file and dock pin away for the selected users. It can also remove the folder access that was granted. The application folder itself is never deleted.
+
+**Tips:**
+* If the program needs libraries that are not in its folder, the Checks panel names them; install them with `apt`.
+* Moving or renaming the application folder later breaks its launchers: run **Edit** and save again, or remove and recreate them.
+
+
 ---
 
 ## 5. Maintenance
@@ -543,6 +585,7 @@ Alerts work in the background as long as SysPulse is running.
 | Check why camera video stutters | NetLens → capture filter `host <camera IP>` → Start → open the stream → **RTP streams** and **Insights** |
 | Find which websites a PC contacts | NetLens → quick button **TLS handshakes** (website names in the Info column) |
 | See which program uses a port | Connections → search the port number |
+| Give an operator account a desktop icon for an in-house app | App Launchers → New launcher → choose the app folder → tick the operator → Create launcher |
 | Stop an app from starting at login | Startup Apps → switch it off |
 | Check battery health | Hardware → Power → *Health* |
 
@@ -554,7 +597,7 @@ Alerts work in the background as long as SysPulse is running.
 No. SysPulse works entirely on your computer. Network traffic happens only when you start a speed test, ping, DNS lookup or PacketForge session. NetLens only listens: captured packets stay in memory until you save them to a file.
 
 **Why does it ask for my password?**
-Only for actions that change the system: uninstalling, cleaning system caches, system services, other users' processes, raising priority, serial access, and the one-time NetLens capture permission. SysPulse itself never runs as administrator.
+Only for actions that change the system: uninstalling, cleaning system caches, system services, other users' processes, raising priority, serial access, the one-time NetLens capture permission, and creating app launchers for other accounts. SysPulse itself never runs as administrator.
 
 **The recording has no sound or only noise.**
 Set *System sound* to **Follow current output** and untick a microphone that shows **not plugged in**. Check the level meters before recording.

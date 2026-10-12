@@ -59,6 +59,13 @@
 - [x] Optional tshark decode and "open in Wireshark"
 - [ ] Later: TLS key-log decryption (SSLKEYLOGFILE), QUIC Initial SNI, HTTP object export, ring-buffer capture to disk, Modbus/MQTT decoders
 
+## Phase 3.8 — App Launchers  ✅
+- [x] Scan an application folder: native programs (ELF, architecture check), AppImages, scripts, Python (venv aware), Java jars; icons; bundled libraries and Qt plugins
+- [x] Launchers for other user accounts: start menu, trusted desktop icon (no "Allow Launching"), dock pin — nothing for the user to do
+- [x] Folder access for other users via ACLs (read or read/write), only where needed
+- [x] Live checks (permissions per user, missing libraries, desktop-file validation), test run, edit, add users, clean removal
+- [ ] Later: system-wide launcher for all current and future users (`/usr/share/applications` + `/etc/skel`), unattended mode from a JSON file, copy-to-/opt option
+
 ## Phase 3b — Later
 - [ ] Long-term history (SQLite) with day/week charts
 - [ ] Optional background file index for instant search

@@ -275,6 +275,32 @@ export async function invoke<T>(cmd: string, args?: Record<string, unknown>): Pr
     case "netlens_check_filter":
     case "netlens_check_capture_filter":
       return null as T;
+    // ---- App Launchers (browser preview only)
+    case "launcher_users":
+      return { me: "oem", aclAvailable: true, users: [
+        { name: "oem", uid: 1000, gid: 1000, home: "/home/oem", fullName: "Admin", loggedIn: true, isAdmin: true },
+        { name: "operator", uid: 1001, gid: 1001, home: "/home/operator", fullName: "Line Operator", loggedIn: false, isAdmin: false },
+      ] } as T;
+    case "launcher_list":
+      return [] as T;
+    case "launcher_scan":
+      return {
+        suggestedId: "signal-viewer", takenIds: [], suggestedEnv: [{ name: "LD_LIBRARY_PATH", value: "/opt/apps/SignalViewer/lib" }],
+        scan: {
+          folder: "/opt/apps/SignalViewer", name: "Signal Viewer", files: 214, bytes: 88_000_000, truncated: false,
+          libraryDirs: ["/opt/apps/SignalViewer/lib"], qtPluginDir: null, venvPython: null,
+          candidates: [
+            { path: "/opt/apps/SignalViewer/SignalViewer", rel: "SignalViewer", kind: "native", score: 120, reason: "Native program", executable: true, size: 5_400_000 },
+            { path: "/opt/apps/SignalViewer/run.sh", rel: "run.sh", kind: "script", score: 65, reason: "Script", executable: true, size: 120 },
+          ],
+          icons: [],
+        },
+      } as T;
+    case "launcher_check":
+      return { issues: [
+        { level: "fix", user: "operator", text: "operator cannot open /home/oem; read access to the application folder will be granted to operator only." },
+        { level: "warning", user: "operator", text: "operator is not logged in; the dock pin and desktop trust take effect at next login." },
+      ], preview: "[Desktop Entry]\nType=Application\nName=Signal Viewer\n", commandLine: "", needsAccess: ["operator"], missingLibraries: [] } as T;
     default:
       return undefined as T;
   }

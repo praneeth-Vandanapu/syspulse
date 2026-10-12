@@ -80,6 +80,7 @@ This document explains **how it is built and why**. Installation is in [INSTALL.
 | Serial | `serialport` (libudev) | 4.10 | USB adapter names and serial numbers, modem lines |
 | Packet capture | Linux `AF_PACKET` sockets in a capability-limited helper (`syspulse-capture`); BPF filters compiled by the system **libpcap** (loaded with `dlopen`) | libpcap 1.10 | Same kernel interface as tcpdump/Wireshark; no build-time libpcap needed |
 | Protocol analysis | Own Rust dissectors (NetLens) + optional **tshark** | — | Fast, safe on hostile input; Wireshark's 3000+ decoders on demand |
+| App Launchers | freedesktop Desktop Entry spec, `runuser`, `setfacl`, `gio` metadata, `gsettings`, `image` crate | — | Standard Ubuntu mechanisms only: menu entries, trusted desktop icons (DING), dock favourites, POSIX ACLs |
 | Parallel filtering | `rayon` | 1 | Display filters over millions of packets use every core |
 | Recorder | **GStreamer** via `gstreamer` crate | 0.25 / GStreamer 1.20 | `ximagesrc` + `pulsesrc` → encoders → muxers; pause without gaps |
 | Privileges | `pkexec` + polkit policy + `syspulse-helper` | — | Standard Ubuntu password dialog |
@@ -156,6 +157,7 @@ UBUNTU_SYSTEM_Monitor/
 │   │   ├── netperf/              speed test: mod.rs (protocol), server.rs, client.rs
 │   │   ├── forge/                PacketForge: mod.rs (sessions), links.rs, serial.rs, encode.rs
 │   │   ├── recorder/             screen recorder: mod.rs (pipeline), sources.rs
+│   │   ├── launcher/             App Launchers: mod.rs (scan, checks, entry), install.rs, icon.rs
 │   │   ├── netlens/              packet analyzer: mod.rs (engine), capture.rs, sniffer.rs,
 │   │   │                         pcapfile.rs, filter.rs, store.rs, views.rs, explain.rs,
 │   │   │                         procmap.rs, wireshark.rs, dissect/{mod,net,web,media,dns}.rs
@@ -174,6 +176,7 @@ UBUNTU_SYSTEM_Monitor/
 │       ├── forge.rs              PacketForge commands + event batcher
 │       ├── recorder.rs           recorder commands, tray, hotkeys, region picker
 │       ├── netlens.rs            NetLens commands
+│       ├── launchers.rs          App Launchers commands + registry
 │       ├── bin/syspulse-helper.rs privileged helper binary
 │       └── bin/syspulse-capture.rs packet-capture helper binary
 ├── ui/                           Svelte frontend
@@ -187,7 +190,7 @@ UBUNTU_SYSTEM_Monitor/
 │       │                         Icon, Modal, Toasts, PageHeader, AppIcon, Treemap,
 │       │                         ForgeLog, ComingSoon, netlens/{PacketList, DetailTree,
 │       │                         HexView, FollowStream}
-│       └── pages/                one Svelte file per page (20)
+│       └── pages/                one Svelte file per page (21)
 ├── packaging/linux/              polkit policy
 ├── scripts/setup-dev-ubuntu.sh   developer environment setup
 └── docs/                         INSTALL, ARCHITECTURE, USER_MANUAL, ROADMAP
@@ -274,7 +277,7 @@ mp4mux|matroskamux|webmmux name=mux ! filesink
 
 ### 5.7 Privilege separation (`privileged`)
 
-`HelperRequest` (JSON, tagged by `op`): `signal`, `renice`, `removePackages`, `cleanSystem`, `deleteFiles`, `service`, `grantSerialAccess`, `setCaptureAccess`.
+`HelperRequest` (JSON, tagged by `op`): `signal`, `renice`, `removePackages`, `cleanSystem`, `deleteFiles`, `service`, `grantSerialAccess`, `setCaptureAccess`, `installLauncher`, `removeLauncher`.
 
 * **App side:** `run_elevated()` runs `pkexec <helper> '<json array>'`. Exit code 126 means the user cancelled; 127 means not authorised.
 * **Helper side:** `execute()` validates every argument again, as root. See [10](#10-security-model).
@@ -301,6 +304,16 @@ mp4mux|matroskamux|webmmux name=mux ! filesink
 
 **Two-pass economy.** At capture time each frame is dissected once *without* labels to update the analysis; the Info column and detail tree are produced later, only for frames on screen. Filters dissect with field collection only.
 
+### 5.9 App Launchers (`launcher`)
+
+| File | Responsibility |
+|---|---|
+| `mod.rs` | **Scan** an application folder (≤ 50,000 entries): ELF parsing (machine type; PIE executable vs shared library via `PT_INTERP`), AppImages, scripts (`#!`), Python entry points (`__main__`), jars; ranking by depth, name similarity, execute bit and penalties (install/uninstall/test…); icons with previews; bundled library folders (`LD_LIBRARY_PATH`), Qt plugin folder (`QT_PLUGIN_PATH`), Python venv. **Users** from `/etc/passwd` (uid 1000–59999, real shell; logged in = `/run/user/<uid>` exists; admin = sudo/admin group). **Check**: per-user path traversal with mode bits, groups and ACL entries (`getfacl`), missing libraries (`ldd` with the launcher's library path), architecture, interpreters, desktop-file validation. **Entry**: Desktop Entry rendering with spec-correct `Exec` quoting (reserved characters, `\\` rule, `%%`) |
+| `install.rs` | Per-user install/remove. Direct mode for the current account; root mode inside the helper, where **every file in a user's home is written by a `runuser -u <user>` child** (no root writes into homes, no symlink redirection). D-Bus work (`gio set metadata::trusted`, `gsettings` favourites) uses the user's session bus when logged in, otherwise `dbus-run-session`. Root itself only adds the program's execute bit and ACLs (`setfacl -m u:<user>:--x` on blocking parents, `-R -P` and default `rX`/`rwX` on the folder) |
+| `icon.rs` | Previews (data URLs) and conversion of PNG/ICO/JPEG/BMP to a centred 256×256 PNG; SVG/XPM installed as-is after a format check |
+
+The app keeps a registry (`launchers.json`) with each spec, its users and the ACL parents added per user, so **Remove** can revoke exactly what was granted.
+
 ---
 
 ## 6. Application layer (`src-tauri`)
@@ -318,6 +331,7 @@ A thin layer: commands translate IPC to `syspulse-core` calls, and background th
 | `forge.rs` | PacketForge commands; **event batcher** collects session events and emits one `forge-events` array every ~40 ms |
 | `recorder.rs` | Countdown → hide window → start; stop/save/cancel; tray menu (status line, Start, Pause/Resume, Stop and save, Cancel, Open, Quit) with a red/amber icon drawn in code and a live "REC mm:ss" label; global hotkeys `Ctrl+Alt+R` / `Ctrl+Alt+P`; 1 s ticker; region-picker window |
 | `netlens.rs` | NetLens commands; the UI pulls a status poll (2 Hz) and only the visible rows, so capture rate never floods the webview; capture is stopped on exit |
+| `launchers.rs` | App Launchers commands; installs for the current user directly, for others via the helper; maintains `launchers.json`; test run with captured output |
 | `bin/syspulse-capture.rs` | Capture helper entry point (`--check`, `capture ...`) |
 | `bin/syspulse-helper.rs` | Root helper: requires euid 0, fixed `PATH`, payload ≤ 256 KB and ≤ 32 requests, logs the requesting `PKEXEC_UID` |
 
@@ -351,6 +365,7 @@ A thin layer: commands translate IPC to `syspulse-core` calls, and background th
 | Tools (`tools.rs`) | `search_files`, `search_cancel`, `open_path`, `list_services`, `service_details`, `service_action`, `list_startup`, `set_startup_enabled`, `save_startup`, `remove_startup`, `list_connections`, `get_alert_config`, `set_alert_config`, `export_text` |
 | Network (`network.rs`) | `net_devices`, `net_connections`, `net_connection_settings`, `net_update_connection`, `net_activate`, `wifi_scan`, `wifi_radio`, `net_ping`, `net_trace`, `net_tool_cancel`, `net_lookup`, `net_ports`, `perf_server_start`, `perf_server_stop`, `perf_server_status`, `perf_discover`, `perf_run`, `perf_cancel` |
 | PacketForge (`forge.rs`) | `forge_ports`, `forge_serial_access`, `forge_grant_serial`, `forge_open`, `forge_close`, `forge_sessions`, `forge_encode`, `forge_send`, `forge_repeat`, `forge_stop_jobs`, `forge_send_file`, `forge_lines`, `forge_break`, `forge_log`, `forge_store_load`, `forge_store_save` |
+| App Launchers (`launchers.rs`) | `launcher_users`, `launcher_scan`, `launcher_check`, `launcher_icon_preview`, `launcher_create`, `launcher_list`, `launcher_remove`, `launcher_test_run` |
 | NetLens (`netlens.rs`) | `netlens_setup`, `netlens_interfaces`, `netlens_grant`, `netlens_start`, `netlens_stop`, `netlens_clear`, `netlens_status`, `netlens_rows`, `netlens_detail`, `netlens_set_filter`, `netlens_check_filter`, `netlens_check_capture_filter`, `netlens_fields`, `netlens_conversations`, `netlens_apps`, `netlens_stats`, `netlens_insights`, `netlens_rtp`, `netlens_follow`, `netlens_locate`, `netlens_open`, `netlens_save`, `netlens_wireshark_decode`, `netlens_open_wireshark` |
 | Recorder (`recorder.rs`) | `rec_sources`, `rec_audio`, `rec_defaults`, `rec_save_defaults`, `rec_start`, `rec_toggle_pause`, `rec_stop`, `rec_status`, `rec_list`, `rec_meter`, `rec_pick_region`, `rec_region_snapshot`, `rec_region_done` |
 
@@ -400,6 +415,7 @@ NetLens sends no events: its UI pulls status and visible rows (see [9](#9-data-f
    * `grantSerialAccess` derives the user from `PKEXEC_UID`, never from the caller.
    * `setCaptureAccess` sets/removes file capabilities only on the `syspulse-capture` binary next to the helper (or `/usr/bin`), checked to be a regular file — the caller cannot name a path.
    * `signal` and `renice` refuse PID 0/1 and the helper itself.
+   * `installLauncher` / `removeLauncher`: target accounts must be real login users (not root); the spec is re-validated (id charset, no control characters, absolute normalised paths, program canonically inside the folder, system folders refused, interpreter allow-list); the icon arrives as validated bytes (PNG/SVG/XPM signature, ≤ 2 MB) — the helper never opens the icon source. Files in homes are written as the user via `runuser`; nothing from the application folder is executed as root; ACL removal is limited to the folder and its recorded ancestors.
 3. **Polkit:** action `io.github.praneeth.syspulse.helper` with `auth_admin_keep` for active sessions (one password covers a few minutes).
 4. **Input validation everywhere:**
    * Host names for ping and trace.
@@ -487,7 +503,7 @@ NetLens sends no events: its UI pulls status and visible rows (see [9](#9-data-f
 
 ## 14. Testing strategy
 
-* **94 Rust tests** (`cargo test --workspace`), including:
+* **105 Rust tests** (`cargo test --workspace`), including:
   * parsers: dpkg, nmcli terse output, `/proc/net` addresses, EDID, pci.ids, RFC 3339, `apt-get -s` output;
   * safety rules: helper refuses bad input, protected paths, units and packages, gst-launch injection;
   * engines on temporary trees: cleaner, large files, search including content search;
@@ -495,7 +511,8 @@ NetLens sends no events: its UI pulls status and visible rows (see [9](#9-data-f
   * serial over a **pseudo-terminal pair** (no hardware);
   * a **real recording** of a screen region with pause/resume;
   * the UI↔Rust JSON contract;
-  * NetLens: synthetic HTTP session (retransmission, 404, response time, follow without duplicate bytes), RTSP→SDP→RTP (port registration, H.264 key frames, loss), DNS names and timing, TLS SNI, filter grammar and errors, pcap/pcapng round-trips, helper record stream, BPF compilation, and a **fuzz test** pushing 3,000 random frames through every link type.
+  * NetLens: synthetic HTTP session (retransmission, 404, response time, follow without duplicate bytes), RTSP→SDP→RTP (port registration, H.264 key frames, loss), DNS names and timing, TLS SNI, filter grammar and errors, pcap/pcapng round-trips, helper record stream, BPF compilation, and a **fuzz test** pushing 3,000 random frames through every link type;
+  * App Launchers: folder scan of a synthetic bundle (ELF vs library detection, scripts, libs, Qt plugins, icons), Exec quoting rules, desktop-file validation, spec rejection, icon conversion, dock favourites parsing. `examples/launcher_selftest.rs` installs a real launcher for the current user (menu, trusted desktop icon, dock), verifies it and removes it again.
 * `examples/` are manual checks against the real system. For instance, `netcfg_selftest` edits a throw-away inactive NetworkManager profile and deletes it.
 * **UI:** `svelte-check` (zero errors and warnings), plus visual checks in a browser with the mock backend.
 
@@ -504,7 +521,7 @@ NetLens sends no events: its UI pulls status and visible rows (see [9](#9-data-f
 ## 15. Packaging
 
 * `tauri build` produces a `.deb` (package `sys-pulse`) and an AppImage.
-* The `.deb` includes `/usr/bin/syspulse`, `/usr/bin/syspulse-helper`, `/usr/bin/syspulse-capture`, the polkit policy, the desktop file and icons. It depends on WebKitGTK, AppIndicator, polkit, pciutils, usbutils, apt, x11-utils, x11-xserver-utils, pulseaudio-utils, libpcap0.8 and the GStreamer plugin packages (see [INSTALL.md](INSTALL.md#3-runtime-dependencies-explained)).
+* The `.deb` includes `/usr/bin/syspulse`, `/usr/bin/syspulse-helper`, `/usr/bin/syspulse-capture`, the polkit policy, the desktop file and icons. It depends on WebKitGTK, AppIndicator, polkit, pciutils, usbutils, apt, x11-utils, x11-xserver-utils, pulseaudio-utils, libpcap0.8, acl, desktop-file-utils and the GStreamer plugin packages (see [INSTALL.md](INSTALL.md#3-runtime-dependencies-explained)).
 * Flatpak and Snap are intentionally **not** used: their sandboxes block `/proc`, other processes, dpkg and system files.
 
 ---

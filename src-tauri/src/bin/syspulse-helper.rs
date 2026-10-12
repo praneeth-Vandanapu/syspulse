@@ -14,7 +14,8 @@ use std::io::Write;
 
 use syspulse_core::privileged::{execute_all, HelperRequest, HelperResponse};
 
-const MAX_PAYLOAD: usize = 256 * 1024;
+// Launcher requests carry a prepared icon (up to ~2 MB as base64).
+const MAX_PAYLOAD: usize = 4 * 1024 * 1024;
 
 fn fail(msg: &str) -> ! {
     let resp = vec![HelperResponse {
