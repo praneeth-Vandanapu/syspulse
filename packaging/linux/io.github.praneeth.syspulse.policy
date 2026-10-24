@@ -11,7 +11,7 @@
  "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
 <policyconfig>
   <vendor>SysPulse (Praneeth)</vendor>
-  <vendor_url>https://github.com/praneeth/syspulse</vendor_url>
+  <vendor_url>https://github.com/praneeth-Vandanapu/syspulse</vendor_url>
   <icon_name>syspulse</icon_name>
   <action id="io.github.praneeth.syspulse.helper">
     <description>Run SysPulse system maintenance tasks</description>

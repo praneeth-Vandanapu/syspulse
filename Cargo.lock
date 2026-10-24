@@ -4002,7 +4002,7 @@ dependencies = [
 
 [[package]]
 name = "syspulse"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "env_logger",
  "libc",
@@ -4020,7 +4020,7 @@ dependencies = [
 
 [[package]]
 name = "syspulse-core"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "gstreamer",
  "image",

@@ -112,7 +112,7 @@ Optional, used when present:
 ### 4.1 One-command setup
 
 ```bash
-git clone https://github.com/praneeth/syspulse.git
+git clone https://github.com/praneeth-Vandanapu/syspulse.git
 cd syspulse
 ./scripts/setup-dev-ubuntu.sh        # asks for your sudo password once
 source ~/.cargo/env                  # or open a new terminal
