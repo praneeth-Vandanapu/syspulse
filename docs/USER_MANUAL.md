@@ -6,7 +6,7 @@
 -->
 # SysPulse — User Manual
 
-**Author:** Praneeth · **Version:** 0.7.0
+**Author:** Praneeth · **Version:** 0.7.1
 
 SysPulse shows what your computer is doing and helps you keep it healthy, from one window. This manual walks through every page. For installation see [INSTALL.md](INSTALL.md).
 
@@ -19,11 +19,10 @@ SysPulse shows what your computer is doing and helps you keep it healthy, from o
 - [3. Network](#3-network) — Network Settings · Speed Test · Net Tools · PacketForge · NetLens · Connections
 - [4. System](#4-system) — Hardware · Services · Startup Apps · App Launchers
 - [5. Maintenance](#5-maintenance) — Software · Cache Cleaner · Large Files · File Search
-- [6. Media](#6-media) — Screen Recorder
-- [7. Settings and alerts](#7-settings-and-alerts)
-- [8. Keyboard shortcuts](#8-keyboard-shortcuts)
-- [9. Common tasks (quick recipes)](#9-common-tasks-quick-recipes)
-- [10. FAQ](#10-faq)
+- [6. Settings and alerts](#6-settings-and-alerts)
+- [7. Keyboard shortcuts](#7-keyboard-shortcuts)
+- [8. Common tasks (quick recipes)](#8-common-tasks-quick-recipes)
+- [9. FAQ](#9-faq)
 
 ---
 
@@ -33,7 +32,7 @@ SysPulse shows what your computer is doing and helps you keep it healthy, from o
 
 The window has two parts:
 
-* **Sidebar (left):** pages grouped into *Monitor*, *Network*, *System*, *Maintenance* and *Media*, with *Settings* at the bottom. The bottom also shows your computer name, Ubuntu version and uptime.
+* **Sidebar (left):** pages grouped into *Monitor*, *Network*, *System* and *Maintenance*, with *Settings* at the bottom. The bottom also shows your computer name, Ubuntu version and uptime.
 * **Page (right):** the selected tool.
 
 **Conventions used throughout the app:**
@@ -481,60 +480,7 @@ Double-click a result to open it, or a folder to search inside it. Tick results 
 
 ---
 
-## 6. Media
-
-### 6.1 Screen Recorder
-
-Records the screen with sound. Requires an X11 session ("Ubuntu on Xorg").
-
-**1 — What to record**
-
-| Option | Notes |
-|---|---|
-| **Full screen** | Pick the monitor |
-| **Window** | Pick from the list; records that window even if others cover it. Keep its size constant while recording |
-| **Region** | **Select region on screen…** shows a frozen picture of the screen. Drag a rectangle, then click **Record this area** (or press `Enter`). Press `A` for the whole screen, `Esc` to cancel. Fine-tune with the X/Y/W/H fields |
-
-*Show mouse pointer* includes the cursor.
-
-**2 — Audio**
-
-| Setting | Meaning |
-|---|---|
-| **System sound → Follow current output** (recommended) | Records whatever you're listening on: speakers, Bluetooth earbuds or HDMI, decided when recording starts |
-| **Microphone → Follow current input** | Records the current microphone |
-| A specific device | Always that device |
-
-* Tick one, both (mixed into one track), or neither (video only).
-* Volume sliders and live **level meters** show the sound is arriving before you start.
-* Warnings appear when:
-  * sound is playing through a different device than the one selected;
-  * a microphone has **nothing plugged in** (it would record only hiss);
-  * you pick Bluetooth earbuds' microphone (it lowers their sound quality while recording).
-
-**3 — Format & quality**
-
-* **Container:** MP4 (most compatible), MKV (survives crashes), WebM.
-* **Codec:** H.264 or H.265 (smaller files). **Frame rate:** 15/24/30/60. **Quality:** Standard / High / Maximum.
-* **Encoder:** *Automatic* picks the best one that works. On systems where the GPU encoder isn't usable, the CPU is used (about half a core at 1080p30).
-
-**4 — Options**
-
-* **Countdown** (none, 3, 5, 10 s).
-* **Hide SysPulse while recording** keeps the window out of the video; control the recording from the top bar instead.
-* **Save to** folder (default `~/Videos/SysPulse`).
-
-**Recording:**
-1. Click **Start recording** (or press `Ctrl+Alt+R` anywhere). The countdown runs, SysPulse hides, recording starts.
-2. The **top bar** (next to Wi-Fi and battery) shows a red record icon and **REC 00:12**. Its menu has Pause / Resume, Stop and save, Cancel recording, Open SysPulse and Quit.
-3. **Pause** with `Ctrl+Alt+P` or the menu; the icon turns amber. Pauses leave no gap in the video.
-4. **Stop** with `Ctrl+Alt+R` or *Stop and save*. A notification confirms the file and SysPulse returns to the recorder page. **Cancel** discards the recording.
-
-The **Recordings** list shows your videos with **Play**, **Show in folder** and **Move to Trash**.
-
----
-
-## 7. Settings and alerts
+## 6. Settings and alerts
 
 | Setting | Description |
 |---|---|
@@ -548,12 +494,10 @@ Alerts work in the background as long as SysPulse is running.
 
 ---
 
-## 8. Keyboard shortcuts
+## 7. Keyboard shortcuts
 
 | Where | Keys | Action |
 |---|---|---|
-| Anywhere (desktop) | `Ctrl+Alt+R` | Start / stop screen recording |
-| Anywhere (desktop) | `Ctrl+Alt+P` | Pause / resume recording |
 | Processes | `Delete` | End the selected process |
 | Processes | `Esc` | Close the details panel |
 | Dialogs | `Esc` | Cancel |
@@ -569,7 +513,7 @@ Alerts work in the background as long as SysPulse is running.
 
 ---
 
-## 9. Common tasks (quick recipes)
+## 8. Common tasks (quick recipes)
 
 | I want to… | Do this |
 |---|---|
@@ -580,7 +524,6 @@ Alerts work in the background as long as SysPulse is running.
 | Set a static IP | Network Settings → **Edit IP settings** → Manual → address, gateway, DNS → **Save & apply** |
 | Test the network between two PCs | PC A: Speed Test → Server mode → Start. PC B: Find servers → **Full suite** |
 | Talk to a USB serial device | PacketForge → New session → Serial → choose port and baud → Connect |
-| Record a tutorial with my voice | Screen Recorder → Full screen → System sound + Microphone (Follow) → Start (`Ctrl+Alt+R`) |
 | See what a program sends over the network | NetLens → Start capture → **Applications** tab, or filter `app.name == "name"` |
 | Check why camera video stutters | NetLens → capture filter `host <camera IP>` → Start → open the stream → **RTP streams** and **Insights** |
 | Find which websites a PC contacts | NetLens → quick button **TLS handshakes** (website names in the Info column) |
@@ -591,19 +534,13 @@ Alerts work in the background as long as SysPulse is running.
 
 ---
 
-## 10. FAQ
+## 9. FAQ
 
 **Is my data sent anywhere?**
 No. SysPulse works entirely on your computer. Network traffic happens only when you start a speed test, ping, DNS lookup or PacketForge session. NetLens only listens: captured packets stay in memory until you save them to a file.
 
 **Why does it ask for my password?**
 Only for actions that change the system: uninstalling, cleaning system caches, system services, other users' processes, raising priority, serial access, the one-time NetLens capture permission, and creating app launchers for other accounts. SysPulse itself never runs as administrator.
-
-**The recording has no sound or only noise.**
-Set *System sound* to **Follow current output** and untick a microphone that shows **not plugged in**. Check the level meters before recording.
-
-**Recording doesn't start on my laptop.**
-You may be in a Wayland session. Log out, click the gear icon on the login screen and choose **Ubuntu on Xorg**.
 
 **PacketForge shows all received data on one line.**
 Choose **Framing → After a pause** (the default), or a delimiter that matches your device.
@@ -621,4 +558,4 @@ The permission belongs to the `syspulse-capture` file. Reinstalling or updating 
 No. It shows which site was contacted (the name in the TLS handshake), the TLS version and the certificate, but the content stays encrypted.
 
 **Where are my settings?**
-In `~/.config/io.github.praneeth.syspulse/`. Recordings are in `~/Videos/SysPulse/`.
+In `~/.config/io.github.praneeth.syspulse/`.

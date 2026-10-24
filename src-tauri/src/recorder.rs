@@ -396,6 +396,11 @@ pub fn toggle_pause(app: &AppHandle) -> Result<(), String> {
 }
 
 /// Tray menu, hotkeys and the 1 s ticker. Called once from setup().
+/// Screen recorder switch. Hidden in public releases until it is finished;
+/// set to true (and `FEATURES.recorder` in ui/src/lib/features.ts) to bring
+/// it back. When off: no tray icon, no global hotkeys, recording refused.
+pub const ENABLED: bool = false;
+
 pub fn init(app: &AppHandle) -> tauri::Result<()> {
     let st = app.state::<RecorderState>();
     *st.defaults.lock().unwrap() = Some(load_defaults(app));
@@ -579,6 +584,9 @@ pub fn rec_save_defaults(
 
 #[tauri::command]
 pub fn rec_start(app: AppHandle, options: StartOptions) -> CmdResult<()> {
+    if !ENABLED {
+        return Err("The screen recorder is not available in this version".into());
+    }
     start_flow(&app, options)
 }
 

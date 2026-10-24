@@ -17,7 +17,7 @@ iperf-style speed test between two PCs, network tools, **PacketForge** (a
 TCP / UDP / serial terminal in the spirit of Hercules and Packet Sender),
 **NetLens** (a Wireshark-style packet analyzer that also shows which app sent
 each packet), a connections view, **App Launchers** (desktop/menu/dock entries for any user
-from an application folder), a **screen recorder** and desktop alerts. It is built with Rust + Tauri, so it stays light: the UI process idles
+from an application folder) and desktop alerts. It is built with Rust + Tauri, so it stays light: the UI process idles
 at about 3% of one CPU core.
 
 ## Features (v0.7)
@@ -42,7 +42,6 @@ at about 3% of one CPU core.
 | **Net Tools** | Ping with a live chart, traceroute, DNS lookup, port check |
 | **Connections** | Every listening port and network connection with its process; ports reachable from the network are highlighted |
 | **Alerts** | Desktop notifications for high CPU/GPU temperature, memory pressure, full disks and low battery (thresholds in Settings) |
-| **Screen Recorder** | Full screen, window or region; system sound and/or microphone with level meters; MP4/MKV/WebM, H.264/H.265; pause/resume; countdown; hotkeys Ctrl+Alt+R / Ctrl+Alt+P; top-bar menu with live REC timer (X11 sessions) |
 | **Hardware** | System, motherboard, BIOS/UEFI (Secure Boot), CPU (caches, microcode, features), memory, GPUs and connected displays (EDID), storage (model, firmware), network adapters (driver versions), audio codecs, battery health, USB and PCI devices. Searchable, exportable as a text report |
 
 ## Documentation
@@ -136,7 +135,7 @@ npm run build                                       # release .deb and AppImage 
 
 ```
 crates/core/   Rust library with all OS logic (no UI): monitor, GPU, hardware, processes,
-               maintenance, networking, PacketForge, NetLens, recorder, privileged helper
+               maintenance, networking, PacketForge, NetLens, launchers, privileged helper
 src-tauri/     Desktop shell: Tauri commands, event loops, syspulse-helper and
                syspulse-capture binaries
 ui/            Svelte 5 + TypeScript frontend (one page per tool)

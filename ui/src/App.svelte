@@ -33,6 +33,7 @@
   import NetLens from "./pages/NetLens.svelte";
   import Launchers from "./pages/Launchers.svelte";
   import Recorder from "./pages/Recorder.svelte";
+  import { FEATURES } from "./lib/features";
   import { onEvent } from "./lib/api";
 
   interface NavItem { id: string; label: string; icon: string; soon?: boolean }
@@ -75,7 +76,7 @@
         { id: "search", label: "File Search", icon: "search" },
       ],
     },
-    { group: "Media", items: [{ id: "recorder", label: "Screen Recorder", icon: "record" }] },
+    ...(FEATURES.recorder ? [{ group: "Media", items: [{ id: "recorder", label: "Screen Recorder", icon: "record" }] }] : []),
   ];
 
   const SOON: Record<string, { icon: string; title: string; phase: string; features: string[] }> = {
@@ -148,7 +149,7 @@
     {:else if app.page === "packetforge"}<PacketForge />
     {:else if app.page === "netlens"}<NetLens />
     {:else if app.page === "launchers"}<Launchers />
-    {:else if app.page === "recorder"}<Recorder />
+    {:else if app.page === "recorder" && FEATURES.recorder}<Recorder />
     {:else if SOON[app.page]}<ComingSoon {...SOON[app.page]} />
     {/if}
   </main>

@@ -35,7 +35,9 @@ fn main() {
             state::load_alert_config(app.handle());
             forge::init(app.handle());
             state::start_telemetry(app.handle().clone());
-            if let Err(e) = recorder::init(app.handle()) {
+            if !recorder::ENABLED {
+                // Screen recorder hidden in this release: no tray, no hotkeys.
+            } else if let Err(e) = recorder::init(app.handle()) {
                 log::warn!("recorder tray/hotkeys unavailable: {e}");
             }
             Ok(())

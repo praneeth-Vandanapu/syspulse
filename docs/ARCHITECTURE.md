@@ -6,7 +6,7 @@
 -->
 # SysPulse — Architecture, Concepts & Technologies
 
-**Author:** Praneeth · **Version:** 0.7.0 · **License:** MIT
+**Author:** Praneeth · **Version:** 0.7.1 · **License:** MIT
 
 SysPulse is an open-source, all-in-one system utility for Ubuntu 22.04+. It is a Linux-only project. It combines the following:
 
@@ -255,6 +255,8 @@ Size: ~33,000 lines of Rust, Svelte and TypeScript.
 | `forge/encode.rs` | Payload encoding (text with C escapes or Hercules `$HH`, hex in any common notation), line endings, checksums — see [11.2](#112-packetforge-notation) |
 
 ### 5.6 Screen recorder (`recorder`)
+
+> **Hidden in public releases.** `recorder::ENABLED` (src-tauri/src/recorder.rs) and `FEATURES.recorder` (ui/src/lib/features.ts) are `false`: no sidebar entry, no tray icon, no global hotkeys, and `rec_start` refuses. The code stays in the repository; set both to `true` to enable it.
 
 | File | Responsibility |
 |---|---|

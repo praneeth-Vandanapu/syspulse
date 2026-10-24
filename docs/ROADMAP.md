@@ -74,7 +74,7 @@
 - [ ] Per-process network bandwidth
 - [ ] Speed test: iperf3 protocol compatibility, IPv6 server, connecting to new Wi-Fi networks
 
-## Phase 4 — Screen recorder  ✅ (X11)
+## Phase 4 — Screen recorder  ✅ (X11) — hidden in public releases (`recorder::ENABLED = false`) until Wayland support and polish are done
 - [x] Capture full screen (any monitor), a single window, or a region selected on a frozen snapshot
 - [x] Audio per recording: system sound, microphone, both mixed or none; device pickers, volume, live level meters
 - [x] MP4 / MKV / WebM; H.264, H.265, VP8; 15–60 fps; quality presets; encoder auto-selection with runtime probing (NVENC / VA-API when usable, x264 / x265 otherwise)

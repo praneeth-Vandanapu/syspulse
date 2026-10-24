@@ -6,7 +6,7 @@
 -->
 # SysPulse — Installation & Required Modules
 
-**Author:** Praneeth · **Version:** 0.7.0 · **License:** MIT
+**Author:** Praneeth · **Version:** 0.7.1 · **License:** MIT
 
 This guide covers:
 
@@ -29,9 +29,8 @@ This guide covers:
 |---|---|
 | OS | Ubuntu **22.04 LTS** or newer (also other Debian-based distributions with the same packages) |
 | Architecture | x86_64 (amd64) |
-| Desktop session | Any; the **screen recorder needs an X11 session** ("Ubuntu on Xorg"). Wayland recording is planned |
+| Desktop session | Any (X11 or Wayland) |
 | Network stack | NetworkManager (default on Ubuntu Desktop) for *Network Settings* |
-| Audio | PulseAudio or PipeWire-Pulse (default on Ubuntu) for the recorder |
 | RAM / disk | ~150 MB RAM while running; ~15 MB installed |
 | GPU (optional) | NVIDIA (driver with NVML), AMD (amdgpu) or Intel (i915/xe) for the GPU page |
 
@@ -42,7 +41,7 @@ This guide covers:
 ### Option A — `.deb` package (recommended)
 
 ```bash
-sudo apt install ./SysPulse_0.7.0_amd64.deb
+sudo apt install ./SysPulse_0.7.1_amd64.deb
 ```
 
 `apt` installs every runtime dependency listed in [section 3](#3-runtime-dependencies-explained) automatically. The package installs:
@@ -60,8 +59,8 @@ Start it from the application menu (**SysPulse**) or run `syspulse`.
 ### Option B — AppImage (portable)
 
 ```bash
-chmod +x SysPulse_0.7.0_amd64.AppImage
-./SysPulse_0.7.0_amd64.AppImage
+chmod +x SysPulse_0.7.1_amd64.AppImage
+./SysPulse_0.7.1_amd64.AppImage
 ```
 
 **Limitation:** inside an AppImage the admin helper lives on a FUSE mount that `root` cannot read. Features that need your password (uninstalling software, cleaning system caches, managing system services, ending other users' processes, granting serial-port access, granting NetLens capture permission, creating launchers for other users) therefore only work with the `.deb`. NetLens can still open capture files in the AppImage. Install the runtime packages from [section 3](#3-runtime-dependencies-explained) yourself.
@@ -75,18 +74,18 @@ Installed automatically by the `.deb`:
 | Package | Used by | Why |
 |---|---|---|
 | `libwebkit2gtk-4.1-0`, `libgtk-3-0` | Whole app | Window and web view (Tauri) |
-| `libayatana-appindicator3-1` | Recorder | Top-bar (tray) menu |
+| `libayatana-appindicator3-1` | App shell | Top-bar (tray) support |
 | `policykit-1` | Admin actions | `pkexec` password dialog |
 | `pciutils`, `usbutils` | Hardware | PCI / USB ID databases (device names) |
 | `apt` | Software, Cleaner | Package removal and APT cache cleaning |
-| `x11-utils` | Recorder | `xprop`, `xwininfo` (window list) |
-| `x11-xserver-utils` | Recorder | `xrandr` (monitor list) |
-| `pulseaudio-utils` | Recorder | `pactl` (audio devices) |
-| `gstreamer1.0-x` | Recorder | `ximagesrc` (screen capture) |
-| `gstreamer1.0-pulseaudio` | Recorder | `pulsesrc` (audio capture) |
-| `gstreamer1.0-plugins-good` | Recorder | MP4 / MKV / WebM muxers, VP8, level meter, JPEG |
-| `gstreamer1.0-plugins-ugly` | Recorder | `x264enc` (H.264 on the CPU) |
-| `gstreamer1.0-libav` | Recorder | `avenc_aac` (AAC audio) |
+| `x11-utils` | Recorder (hidden in this release) | `xprop`, `xwininfo` (window list) |
+| `x11-xserver-utils` | Recorder (hidden in this release) | `xrandr` (monitor list) |
+| `pulseaudio-utils` | Recorder (hidden in this release) | `pactl` (audio devices) |
+| `gstreamer1.0-x` | Recorder (hidden in this release) | `ximagesrc` (screen capture) |
+| `gstreamer1.0-pulseaudio` | Recorder (hidden in this release) | `pulsesrc` (audio capture) |
+| `gstreamer1.0-plugins-good` | Recorder (hidden in this release) | MP4 / MKV / WebM muxers, VP8, level meter, JPEG |
+| `gstreamer1.0-plugins-ugly` | Recorder (hidden in this release) | `x264enc` (H.264 on the CPU) |
+| `gstreamer1.0-libav` | Recorder (hidden in this release) | `avenc_aac` (AAC audio) |
 | `acl` | App Launchers | `setfacl` / `getfacl`: give another user access to an application folder |
 | `desktop-file-utils` | App Launchers | Validates launcher files and refreshes the application menu |
 | `libpcap0.8` | NetLens | Compiles capture filters (`tcp port 554`); loaded at run time |
@@ -181,8 +180,8 @@ Workspace `Cargo.toml` → `crates/core` (library) and `src-tauri` (application 
 | `tauri-build` | 2.7 | Build script |
 | `tauri-plugin-dialog` | 2.8 | Open / save / folder dialogs |
 | `tauri-plugin-opener` | 2.7 | Open files, show in folder |
-| `tauri-plugin-notification` | 2.5 | Desktop notifications (alerts, recorder) |
-| `tauri-plugin-global-shortcut` | 2.4 | Recorder hotkeys |
+| `tauri-plugin-notification` | 2.5 | Desktop notifications (alerts) |
+| `tauri-plugin-global-shortcut` | 2.4 | Recorder hotkeys (recorder hidden in this release) |
 | `sysinfo` | 0.39 | CPU, memory, disks, network, processes |
 | `nvml-wrapper` | 0.13 | NVIDIA GPU metrics (loads NVML at runtime) |
 | `nix` | 0.31 | Signals, user/group info |
@@ -193,7 +192,7 @@ Workspace `Cargo.toml` → `crates/core` (library) and `src-tauri` (application 
 | `serialport` | 4.10 | Serial ports for PacketForge |
 | `rayon` | 1 | Parallel display-filter evaluation in NetLens |
 | `image` | 0.25 (png, ico, jpeg, bmp) | App Launchers icon conversion to 256×256 PNG |
-| `gstreamer` | 0.25 (feature `v1_20`) | Screen recorder pipelines |
+| `gstreamer` | 0.25 (feature `v1_20`) | Screen recorder pipelines (recorder hidden in this release) |
 | `serde`, `serde_json` | 1 | Data model / IPC serialisation |
 | `thiserror` | 2 | Error type |
 | `log`, `env_logger` | 0.4 / 0.11 | Logging (`RUST_LOG=debug syspulse`) |
@@ -240,7 +239,6 @@ Other useful commands:
 | `cargo run -p syspulse-core --example phase2 -- software\|cleaner\|large` | Software, cleaner and large-file engines from the command line |
 | `cargo run --release -p syspulse-core --example netperf -- server` | Command-line speed-test server |
 | `cargo run --release -p syspulse-core --example netperf -- <ip> tcp bidir` | Command-line speed-test client |
-| `cargo run -p syspulse-core --example rec_check -- sources` | List monitors, windows, audio devices and working encoders |
 
 ---
 
@@ -251,7 +249,6 @@ Other useful commands:
 | **Serial ports** (PacketForge) | Click **Grant serial access** in PacketForge, or run `sudo usermod -aG dialout $USER`, then **log out and back in** |
 | **Packet capture** (NetLens) | Click **Grant capture permission** in NetLens (one password prompt). This gives only `syspulse-capture` the `cap_net_raw,cap_net_admin` capabilities. To remove: Capture options → **Revoke**, or `sudo setcap -r /usr/bin/syspulse-capture` |
 | **Speed-test server** | Allow the port if a firewall is on: `sudo ufw allow 5201` (TCP and UDP) |
-| **Screen recorder** | Use an X11 session ("Ubuntu on Xorg" on the login screen) |
 | **Tray menu** | Ubuntu shows it by default. On other GNOME setups, enable the *AppIndicator and KStatusNotifierItem Support* extension |
 | **NVIDIA metrics** | Use the proprietary driver (`nvidia-smi` must work) |
 
@@ -262,10 +259,8 @@ Other useful commands:
 | Location | Contents |
 |---|---|
 | `~/.config/io.github.praneeth.syspulse/alerts.json` | Alert thresholds |
-| `~/.config/io.github.praneeth.syspulse/recorder.json` | Recorder settings used by the hotkeys and tray |
 | `~/.config/io.github.praneeth.syspulse/packetforge.json` | PacketForge macros, profiles and send history |
 | `~/.local/share/io.github.praneeth.syspulse/` | Web view storage (UI preferences) |
-| `~/Videos/SysPulse/` | Screen recordings (default, changeable) |
 | `~/.config/io.github.praneeth.syspulse/launchers.json` | App Launchers registry (what was created, for whom, folder access granted) |
 | Target users: `~/.local/share/applications/syspulse-*.desktop`, `~/.local/share/icons/…/syspulse-*`, desktop icon | Launchers you create for them (removed with **Remove…**) |
 | `~/.cache/syspulse/netlens/` | Temporary copies for *Open in Wireshark* / *Wireshark decode* (replaced each time) |
@@ -282,7 +277,6 @@ sudo apt remove sys-pulse           # package name is "sys-pulse"; keeps setting
 rm -rf ~/.config/io.github.praneeth.syspulse ~/.local/share/io.github.praneeth.syspulse   # remove settings
 ```
 
-Recordings in `~/Videos/SysPulse` are not removed.
 
 ---
 
@@ -293,9 +287,6 @@ Recordings in `~/Videos/SysPulse` are not removed.
 | Layout looks broken in `npm run dev`, terminal shows `[postcss] … Unknown word SysPulse` | Fixed in `ui/vite.config.ts` (development builds inject component styles instead of serving them separately). If you still see it with an older copy, restart `npm run dev`. Packaged builds were never affected |
 | "Port 1420 is already in use" | Another `npm run dev` is still running; stop it first |
 | GPU page shows no NVIDIA data | NVML missing (no proprietary driver) or the dGPU is asleep. SysPulse never wakes a suspended GPU |
-| Recorder: "No working GPU encoder" | GStreamer 1.20's NVENC plugin does not support NVIDIA drivers ≥ 5xx. The CPU encoder (x264) is used automatically. Install `gstreamer1.0-vaapi` for Intel/AMD hardware encoding |
-| Recording has no sound, or only hiss | Choose **System sound → Follow current output**. A "not plugged in" microphone (e.g. headset jack) records only hiss; untick Microphone or pick a connected one |
-| Recorder refuses to start on Wayland | Log in with "Ubuntu on Xorg"; Wayland support is planned |
 | PacketForge: "permission denied" on `/dev/ttyUSB0` | Not in `dialout`; use **Grant serial access**, then log out and in |
 | NetLens: **Start capture** is greyed out | Capture permission not granted yet: click **Grant capture permission**. In a development build, rebuilding `syspulse-capture` removes the permission; grant it again |
 | NetLens: capture filter field disabled | `libpcap0.8` missing: `sudo apt install libpcap0.8` (display filters still work) |
@@ -305,5 +296,4 @@ Recordings in `~/Videos/SysPulse` are not removed.
 | App Launchers: app does not start for the other user | Open **Edit** and check the Checks panel: folder access, missing libraries, or the program needs write access (enable "let them write in it") |
 | Speed test cannot connect | Server mode not started on the other PC, wrong IP, or firewall — `sudo ufw allow 5201` |
 | Admin actions fail in the AppImage | Use the `.deb` (see [Option B](#option-b--appimage-portable)) |
-| Hotkeys do nothing | Another app owns Ctrl+Alt+R / Ctrl+Alt+P; the tray menu still works. Logs: run `syspulse` from a terminal |
 | Network changes ask for a password | NetworkManager's policy for your account; enter it in the system dialog |
