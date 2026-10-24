@@ -68,6 +68,20 @@ After a one-time **Grant capture permission** it holds only the
 every capability before reading packets. Revoke it any time from NetLens'
 Capture options.
 
+## Security notes
+
+SysPulse is a system administration tool, so some features need elevated rights.
+These are the known limitations of version 0.7, planned to be fixed in a later release:
+
+| Area | Limitation | Until it is fixed |
+|---|---|---|
+| NetLens capture helper | After **Grant capture permission**, `/usr/bin/syspulse-capture` can be run by every account on the PC, so other local users could capture network traffic | On shared PCs, do not grant capture permission (or revoke it after use in NetLens → Capture options), or restrict it: `sudo chmod 750 /usr/bin/syspulse-capture` |
+| Admin password | Polkit remembers the password for a few minutes after an admin action (`auth_admin_keep`), like `sudo` | Lock the screen when leaving the PC |
+| Web interface hardening | Commands are not yet restricted per window, and some file-saving commands accept a path from the interface. No exploit is known (the interface never renders untrusted text as HTML); this is defence in depth | — |
+
+Please report security problems privately (see `SECURITY.md` once published, or open a GitHub
+security advisory) rather than in a public issue.
+
 ## Speed test between two PCs
 
 1. On PC **A**: open *Speed Test* → *Server mode* → *Start server* (default port 5201).
