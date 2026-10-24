@@ -452,6 +452,11 @@ fn handshake(cx: &mut Cx, mut p: usize, end: usize, partial: bool, infos: &mut V
 fn hello(cx: &mut Cx, b: usize, end: usize, client: bool, info: &mut String) {
     let r = Rd::new(cx.data);
     let Some(ver) = r.u16(b) else { return };
+    // Hellos carry the real (legacy) protocol version; the record layer of a
+    // Client Hello says TLS 1.0 for compatibility, so prefer the hello's.
+    if matches!(cx.out.label, Some("TLS") | Some("TLSv1") | Some("TLSv1.1")) && ver >= 0x0302 {
+        cx.out.label = Some(if ver >= 0x0303 { "TLSv1.2" } else { "TLSv1.1" });
+    }
     cx.add("tls.handshake.version", Val::U(ver as u64), b, 2, |_| {
         format!("Version: {} (0x{ver:04x})", tls_version_name(ver))
     });

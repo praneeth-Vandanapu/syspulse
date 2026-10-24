@@ -264,7 +264,16 @@ pub fn explain(d: &Dissection, m: &Meta, n: &Names) -> String {
     if a & an::ZERO_WINDOW != 0 {
         s.push_str(" ⚠ The receiver's buffer is full (zero window): the sender must pause. The receiving application is too slow.");
     }
-    s
+    capitalize(s)
+}
+
+/// Sentences may start with "this PC" or a host name: capitalise the first letter.
+fn capitalize(s: String) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        Some(f) if f.is_lowercase() => f.to_uppercase().collect::<String>() + c.as_str(),
+        _ => s,
+    }
 }
 
 fn tcp_sentence(d: &Dissection, src: &str, dst: &str) -> String {

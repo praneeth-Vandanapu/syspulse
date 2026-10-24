@@ -68,13 +68,27 @@ function telemetry(): Telemetry {
   };
 }
 
-const NAMES = ["firefox", "code", "gnome-shell", "Xorg", "syspulse", "pipewire", "nautilus", "slack", "python3", "dockerd", "systemd", "bash"];
+const NAMES = [
+  "firefox", "code", "gnome-shell", "Xorg", "syspulse", "pipewire", "nautilus", "slack", "python3", "dockerd",
+  "systemd", "bash", "gnome-terminal", "thunderbird", "spotify", "vlc", "evince", "gjs", "tracker-miner-fs",
+  "NetworkManager", "pulseaudio", "snapd", "cupsd", "containerd", "node", "rustc", "cargo", "gedit", "eog",
+  "gnome-control-center", "ibus-daemon", "polkitd", "systemd-resolved", "systemd-journald", "wpa_supplicant",
+  "bluetoothd", "upowerd", "colord", "gvfsd", "xdg-desktop-portal", "dbus-daemon", "ModemManager", "avahi-daemon",
+  "chrome", "telegram-desktop",
+];
+const SYSTEM_PROCS = new Set([
+  "Xorg", "dockerd", "systemd", "NetworkManager", "snapd", "cupsd", "containerd", "polkitd", "systemd-resolved",
+  "systemd-journald", "wpa_supplicant", "bluetoothd", "upowerd", "colord", "dbus-daemon", "ModemManager", "avahi-daemon",
+]);
+const DEMO_ICON = "data:image/svg+xml;base64," + btoa(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="4" y="4" width="56" height="56" rx="14" fill="#1f6feb"/>' +
+  '<polyline points="12,38 22,38 27,22 34,48 40,30 44,38 52,38" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>');
 function processes(): ProcessInfo[] {
-  return Array.from({ length: 140 }, (_, i) => ({
+  return Array.from({ length: NAMES.length }, (_, i) => ({
     pid: 1000 + i * 7,
     ppid: 1,
-    name: NAMES[i % NAMES.length] + (i >= NAMES.length ? `-${i}` : ""),
-    user: i % 5 === 0 ? "root" : "praneeth",
+    name: NAMES[i],
+    user: SYSTEM_PROCS.has(NAMES[i]) ? "root" : "praneeth",
     state: i % 9 === 0 ? "Runnable" : "Sleeping",
     cpu: Math.random() * (i < 6 ? 40 : 3),
     memory: Math.random() * 800 * 1024 ** 2,
@@ -241,29 +255,56 @@ export async function invoke<T>(cmd: string, args?: Record<string, unknown>): Pr
       } as T;
     case "netlens_status":
       return {
-        state: "stopped", source: "demo.pcapng", interfaces: ["enp3s0"], captureFilter: "", packets: 5000, shown: 5000, bytes: 4_200_000,
+        state: "stopped", source: "Live capture on enp3s0", interfaces: ["enp3s0"], captureFilter: "", packets: 5000, shown: 5000, bytes: 4_200_000,
         memory: 0, dropped: 0, duration: 42.5, packetsPerSec: 0, bitsPerSec: 0, messages: [], displayFilter: "", unsaved: false, progress: 1, stopReason: "",
       } as T;
     case "netlens_rows": {
       const a = args as { start: number; count: number };
-      const protos = [["TCP", "tcp"], ["TLSv1.3", "tls"], ["HTTP", "http"], ["DNS", "dns"], ["RTSP", "media"], ["RTP", "media"], ["ARP", "arp"]];
+      const me = "192.168.1.20";
+      // [proto, colour, src, dst, len, info, app, problem]
+      const T: [string, string, string, string, number, string, string, number][] = [
+        ["DNS", "dns", me, "192.168.1.1", 74, "Standard query 0x4f2a A github.com", "firefox", 0],
+        ["DNS", "dns", "192.168.1.1", me, 90, "Standard query response 0x4f2a A github.com A 140.82.112.3", "firefox", 0],
+        ["TCP", "tcp", me, "140.82.112.3", 74, "51844 → 443 [SYN] Seq=0 Win=64240 Len=0 MSS=1460 WS=128", "firefox", 0],
+        ["TCP", "tcp", "140.82.112.3", me, 74, "443 → 51844 [SYN, ACK] Seq=0 Ack=1 Win=65535 Len=0 MSS=1436 WS=1024", "firefox", 0],
+        ["TCP", "tcp", me, "140.82.112.3", 66, "51844 → 443 [ACK] Seq=1 Ack=1 Win=502 Len=0", "firefox", 0],
+        ["TLSv1.3", "tls", me, "140.82.112.3", 583, "Client Hello (SNI=github.com)", "firefox", 0],
+        ["TLSv1.3", "tls", "140.82.112.3", me, 1484, "Server Hello (TLSv1.3), Change Cipher Spec, Application Data", "firefox", 0],
+        ["TLSv1.3", "tls", me, "140.82.112.3", 130, "Change Cipher Spec, Application Data", "firefox", 0],
+        ["TLSv1.3", "tls", "140.82.112.3", me, 1448, "Application Data", "firefox", 0],
+        ["HTTP", "http", me, "93.184.215.14", 412, "GET /index.html HTTP/1.1", "code", 0],
+        ["HTTP", "http", "93.184.215.14", me, 1256, "HTTP/1.1 200 OK  (text/html)", "code", 0],
+        ["RTSP", "media", me, "192.168.1.64", 168, "DESCRIBE rtsp://192.168.1.64/stream1 RTSP/1.0", "vlc", 0],
+        ["RTSP/SDP", "media", "192.168.1.64", me, 744, "Reply: RTSP/1.0 200 OK (application/sdp)", "vlc", 0],
+        ["RTSP", "media", me, "192.168.1.64", 215, "SETUP rtsp://192.168.1.64/stream1/trackID=1 RTSP/1.0", "vlc", 0],
+        ["RTSP", "media", me, "192.168.1.64", 160, "PLAY rtsp://192.168.1.64/stream1 RTSP/1.0", "vlc", 0],
+        ["RTP", "media", "192.168.1.64", me, 1442, "PT=H264, SSRC=0x5A3F21C9, Seq=18233, Time=29004000, FU-A start: IDR slice (key frame)", "vlc", 0],
+        ["RTP", "media", "192.168.1.64", me, 1442, "PT=H264, SSRC=0x5A3F21C9, Seq=18234, Time=29004000", "vlc", 0],
+        ["RTP", "media", "192.168.1.64", me, 988, "PT=H264, SSRC=0x5A3F21C9, Seq=18235, Time=29004000, Mark", "vlc", 0],
+        ["TCP", "tcp", "140.82.112.3", me, 1484, "[Retransmission] 443 → 51844 [ACK] Seq=2897 Ack=518 Win=67 Len=1418", "firefox", 1],
+        ["QUIC", "tls", me, "142.250.183.14", 1292, "Initial, DCID=8a3c1f0e9b7d2a44, SCID=", "chrome", 0],
+        ["QUIC", "tls", "142.250.183.14", me, 1252, "Protected Payload (KP0)", "chrome", 0],
+        ["ARP", "arp", "a4:83:e7:12:9c:01", "ff:ff:ff:ff:ff:ff", 42, "Who has 192.168.1.1? Tell 192.168.1.20", "", 0],
+        ["ARP", "arp", "3c:84:6a:aa:10:22", "a4:83:e7:12:9c:01", 60, "192.168.1.1 is at 3c:84:6a:aa:10:22", "", 0],
+        ["DNS", "dns", me, "192.168.1.1", 78, "Standard query 0x91be A updates.example.org", "snapd", 0],
+        ["DNS", "dns", "192.168.1.1", me, 94, "Standard query response 0x91be No such name A updates.example.org", "snapd", 2],
+        ["ICMP", "icmp", me, "8.8.8.8", 98, "Echo (ping) request id=0x0012, seq=4, ttl=64", "ping", 0],
+        ["ICMP", "icmp", "8.8.8.8", me, 98, "Echo (ping) reply id=0x0012, seq=4, ttl=117", "ping", 0],
+        ["TCP", "tcp", "52.10.4.201", me, 60, "443 → 40122 [RST] Seq=1 Win=0 Len=0", "slack", 2],
+      ];
       return Array.from({ length: Math.max(0, Math.min(a.count, 5000 - a.start)) }, (_, k) => {
         const i = a.start + k;
-        const [proto, color] = protos[i % protos.length];
-        return { no: i + 1, time: i * 0.0085, delta: 0.0085, clock: `2026-10-08 14:03:${String(12 + Math.floor(i * 0.0085) % 47).padStart(2, "0")}.123456789`, src: "192.168.1.20", dst: i % 3 ? "140.82.112.3" : "192.168.1.64", proto, len: 60 + ((i * 37) % 1400),
-          info: `${proto} demo packet ${i + 1}`, color, problem: i % 97 === 0 ? 2 : i % 41 === 0 ? 1 : 0, app: i % 2 ? "firefox" : "vlc", dir: (i % 2) + 1 };
+        const [proto, color, src, dst, len, info, app, problem] = T[i % T.length];
+        const t = i * 0.0137;
+        const sec = 54 + Math.floor(t);
+        const clock = `2026-10-08 14:03:${String(sec % 60).padStart(2, "0")}.${String(Math.floor((t % 1) * 1e9)).padStart(9, "0")}`;
+        return { no: i + 1, time: t, delta: 0.0137, clock, src, dst, proto, len, info, color, problem, app, dir: src === me ? 2 : src.includes(":") ? 0 : 1 };
       }) as T;
     }
     case "netlens_detail":
-      return {
-        no: (args as { no: number }).no, summary: "firefox on this PC sends 517 bytes to github.com (140.82.112.3) over TCP (HTTPS (secure web)).",
-        proto: "TLSv1.3", stream: 3, tcp: true, time: "2026-10-08 14:03:12.123456789", bytes: btoa("\x00\x11\x22\x33\x44\x55 demo packet bytes ".repeat(8)),
-        tree: [
-          { label: "Frame 1: 74 bytes on wire", field: "frame", filter: "frame", start: 0, len: 74, level: 0, children: [{ label: "Interface: enp3s0", field: "frame.interface_name", filter: 'frame.interface_name == "enp3s0"', start: 0, len: 0, level: 0 }] },
-          { label: "Ethernet II", field: "eth", filter: "eth", start: 0, len: 14, level: 0 },
-          { label: "Transport Layer Security", field: "tls", filter: "tls", start: 54, len: 20, level: 0, children: [{ label: "Server name: github.com", field: "tls.handshake.extensions_server_name", filter: 'tls.handshake.extensions_server_name == "github.com"', start: 60, len: 10, level: 0 }] },
-        ],
-      } as T;
+      // Real NetLens dissector output for an HTTPS Client Hello
+      // (generated by crates/core/examples/netlens_demo_detail.rs).
+      return (await import("./demo/netlens-detail.json")).default as T;
     case "netlens_fields":
       return [{ name: "tcp.port", kind: "uint", description: "Source or destination TCP port" }, { name: "tls.handshake.extensions_server_name", kind: "str", description: "Server name (SNI)" }] as T;
     case "netlens_insights":
@@ -277,28 +318,28 @@ export async function invoke<T>(cmd: string, args?: Record<string, unknown>): Pr
       return null as T;
     // ---- App Launchers (browser preview only)
     case "launcher_users":
-      return { me: "oem", aclAvailable: true, users: [
-        { name: "oem", uid: 1000, gid: 1000, home: "/home/oem", fullName: "Admin", loggedIn: true, isAdmin: true },
+      return { me: "admin", aclAvailable: true, users: [
+        { name: "admin", uid: 1000, gid: 1000, home: "/home/admin", fullName: "Administrator", loggedIn: true, isAdmin: true },
         { name: "operator", uid: 1001, gid: 1001, home: "/home/operator", fullName: "Line Operator", loggedIn: false, isAdmin: false },
       ] } as T;
     case "launcher_list":
       return [] as T;
     case "launcher_scan":
       return {
-        suggestedId: "signal-viewer", takenIds: [], suggestedEnv: [{ name: "LD_LIBRARY_PATH", value: "/opt/apps/SignalViewer/lib" }],
+        suggestedId: "signal-viewer", takenIds: [], suggestedEnv: [{ name: "LD_LIBRARY_PATH", value: "/home/admin/Apps/SignalViewer/lib" }],
         scan: {
-          folder: "/opt/apps/SignalViewer", name: "Signal Viewer", files: 214, bytes: 88_000_000, truncated: false,
-          libraryDirs: ["/opt/apps/SignalViewer/lib"], qtPluginDir: null, venvPython: null, pyinstaller: false,
+          folder: "/home/admin/Apps/SignalViewer", name: "Signal Viewer", files: 214, bytes: 88_000_000, truncated: false,
+          libraryDirs: ["/home/admin/Apps/SignalViewer/lib"], qtPluginDir: null, venvPython: null, pyinstaller: false,
           candidates: [
-            { path: "/opt/apps/SignalViewer/SignalViewer", rel: "SignalViewer", kind: "native", score: 120, reason: "Native program", executable: true, size: 5_400_000 },
-            { path: "/opt/apps/SignalViewer/run.sh", rel: "run.sh", kind: "script", score: 65, reason: "Script", executable: true, size: 120 },
+            { path: "/home/admin/Apps/SignalViewer/SignalViewer", rel: "SignalViewer", kind: "native", score: 120, reason: "Native program", executable: true, size: 5_400_000 },
+            { path: "/home/admin/Apps/SignalViewer/run.sh", rel: "run.sh", kind: "script", score: 65, reason: "Script", executable: true, size: 120 },
           ],
-          icons: [],
+          icons: [{ path: "/home/admin/Apps/SignalViewer/res/icon.svg", rel: "res/icon.svg", width: 0, height: 0, score: 50, preview: DEMO_ICON }],
         },
       } as T;
     case "launcher_check":
       return { issues: [
-        { level: "fix", user: "operator", text: "operator cannot open /home/oem; read access to the application folder will be granted to operator only." },
+        { level: "fix", user: "operator", text: "operator cannot open /home/admin; read access to the application folder will be granted to operator only." },
         { level: "warning", user: "operator", text: "operator is not logged in; the dock pin and desktop trust take effect at next login." },
       ], preview: "[Desktop Entry]\nType=Application\nName=Signal Viewer\n", commandLine: "", needsAccess: ["operator"], missingLibraries: [] } as T;
     default:

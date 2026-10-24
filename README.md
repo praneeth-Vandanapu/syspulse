@@ -7,7 +7,10 @@
 # SysPulse
 
 **A fast, good-looking system monitor and utility suite for Ubuntu (22.04+).**
-Author: **Praneeth** · License: **MIT**
+Author: **Praneeth** · License: **MIT** ·
+[Download the latest release](https://github.com/praneeth-Vandanapu/syspulse/releases/latest)
+
+![SysPulse dashboard: live CPU, memory, GPU and disk gauges with history charts](docs/screenshots/dashboard.png)
 
 SysPulse combines what you normally need several tools for: a resource monitor,
 a GPU monitor, a hardware inventory, a process manager, a software manager, a
@@ -19,6 +22,19 @@ TCP / UDP / serial terminal in the spirit of Hercules and Packet Sender),
 each packet), a connections view, **App Launchers** (desktop/menu/dock entries for any user
 from an application folder) and desktop alerts. It is built with Rust + Tauri, so it stays light: the UI process idles
 at about 3% of one CPU core.
+
+## Screenshots
+
+| | |
+|---|---|
+| ![NetLens packet analyzer](docs/screenshots/netlens.png) | ![Process manager](docs/screenshots/processes.png) |
+| **NetLens** — capture and decode traffic: plain-English summary, protocol tree linked to the bytes, Wireshark-style filters | **Processes** — every running program with CPU, memory and disk usage; end, kill, priority, tree view |
+| ![Large Files disk map](docs/screenshots/largefiles.png) | ![App Launchers](docs/screenshots/launchers.png) |
+| **Large Files** — interactive disk map, biggest folders and space by file type | **App Launchers** — turn an app folder into menu, desktop and dock entries for any user |
+| ![GPU monitor](docs/screenshots/gpu.png) | |
+| **GPU** — load, VRAM, temperature, power, clocks and per-process GPU memory for NVIDIA, AMD and Intel | |
+
+<sub>Screenshots use the built-in demo data, so they show no real system details.</sub>
 
 ## Features (v0.7)
 

@@ -1,0 +1,681 @@
+{
+ "bytes": "PIRqqhAipIPnEpwBCABFAAEXXRpAAEAGez7AqAEUjFJwA8qEAbtrjR8CDzqcVYAYAfaaTAAAAQEICis8kQeOEkRaFgMBAN4BAADaAwMFTpfgKXK7BE2W3yhxugNMld4ncLkCS5TdJm+4AUqT3CADID1ad5SxzusIJUJffJm20/ANKkdkgZ672PUSL0xphgAQEwETAxMCwCvAL8ypzKjALAEAAIEAAAAPAA0AAApnaXRodWIuY29tABcAAP8BAAEAAAoACAAGAB0AFwAYABAADgAMAmgyCGh0dHAvMS4xAA0ACgAIBAMIBAQBBQMAKwAFBAMEAwMALQACAQEAMwAmACYAHQAgCzBVep/E6Q4zWH2ix+wRNluApcrvFDleg6jN8hc8YYY=",
+ "no": 6,
+ "proto": "TLSv1.2",
+ "stream": 0,
+ "summary": "This PC starts an encrypted HTTPS/TLS session with github.com. Only the site name is visible; the content will be encrypted.",
+ "tcp": true,
+ "time": "2026-10-08 15:53:54.068500000",
+ "tree": [
+  {
+   "children": [
+    {
+     "field": "",
+     "label": "Arrival time: 2026-10-08 15:53:54.068500000",
+     "len": 0,
+     "level": 0,
+     "start": 0
+    },
+    {
+     "field": "frame.time_relative",
+     "filter": "frame.time_relative >= 0.068500",
+     "label": "Time since first frame: 0.068500 s",
+     "len": 0,
+     "level": 0,
+     "start": 0
+    },
+    {
+     "field": "frame.time_delta",
+     "filter": "frame.time_delta >= 0.055500",
+     "label": "Time since previous frame: 0.055500 s",
+     "len": 0,
+     "level": 0,
+     "start": 0
+    },
+    {
+     "field": "frame.number",
+     "filter": "frame.number == 6",
+     "label": "Frame number: 6",
+     "len": 0,
+     "level": 0,
+     "start": 0
+    },
+    {
+     "field": "frame.len",
+     "filter": "frame.len == 293",
+     "label": "Frame length: 293 bytes",
+     "len": 0,
+     "level": 0,
+     "start": 0
+    },
+    {
+     "field": "frame.cap_len",
+     "filter": "frame.cap_len == 293",
+     "label": "Capture length: 293 bytes",
+     "len": 0,
+     "level": 0,
+     "start": 0
+    },
+    {
+     "field": "frame.interface_name",
+     "filter": "frame.interface_name == \"enp3s0\"",
+     "label": "Interface: enp3s0",
+     "len": 0,
+     "level": 0,
+     "start": 0
+    },
+    {
+     "field": "frame.direction",
+     "filter": "frame.direction == \"out\"",
+     "label": "Direction: sent by this PC",
+     "len": 0,
+     "level": 0,
+     "start": 0
+    }
+   ],
+   "field": "frame",
+   "filter": "frame",
+   "label": "Frame 6: 293 bytes on wire (2344 bits), 293 bytes captured, on interface enp3s0",
+   "len": 293,
+   "level": 0,
+   "start": 0
+  },
+  {
+   "children": [
+    {
+     "field": "eth.dst",
+     "filter": "eth.dst == 3c:84:6a:aa:10:22",
+     "label": "Destination: 3c:84:6a:aa:10:22",
+     "len": 6,
+     "level": 0,
+     "start": 0
+    },
+    {
+     "field": "eth.src",
+     "filter": "eth.src == a4:83:e7:12:9c:01",
+     "label": "Source: a4:83:e7:12:9c:01",
+     "len": 6,
+     "level": 0,
+     "start": 6
+    },
+    {
+     "field": "eth.type",
+     "filter": "eth.type == 2048",
+     "label": "Type: IPv4 (0x0800)",
+     "len": 2,
+     "level": 0,
+     "start": 12
+    }
+   ],
+   "field": "eth",
+   "filter": "eth",
+   "label": "Ethernet II, Src: a4:83:e7:12:9c:01, Dst: 3c:84:6a:aa:10:22",
+   "len": 14,
+   "level": 0,
+   "start": 0
+  },
+  {
+   "children": [
+    {
+     "field": "ip.version",
+     "filter": "ip.version == 4",
+     "label": "Version: 4",
+     "len": 1,
+     "level": 0,
+     "start": 14
+    },
+    {
+     "field": "ip.hdr_len",
+     "filter": "ip.hdr_len == 20",
+     "label": "Header length: 20 bytes",
+     "len": 1,
+     "level": 0,
+     "start": 14
+    },
+    {
+     "field": "ip.dsfield.dscp",
+     "filter": "ip.dsfield.dscp == 0",
+     "label": "Differentiated services: DSCP 0 (Default), ECN 0",
+     "len": 1,
+     "level": 0,
+     "start": 15
+    },
+    {
+     "field": "ip.len",
+     "filter": "ip.len == 279",
+     "label": "Total length: 279",
+     "len": 2,
+     "level": 0,
+     "start": 16
+    },
+    {
+     "field": "ip.id",
+     "filter": "ip.id == 23834",
+     "label": "Identification: 0x5d1a (23834)",
+     "len": 2,
+     "level": 0,
+     "start": 18
+    },
+    {
+     "children": [
+      {
+       "field": "ip.flags.df",
+       "filter": "ip.flags.df == 1",
+       "label": "Don't fragment: Set",
+       "len": 1,
+       "level": 0,
+       "start": 20
+      },
+      {
+       "field": "ip.flags.mf",
+       "filter": "ip.flags.mf == 0",
+       "label": "More fragments: Not set",
+       "len": 1,
+       "level": 0,
+       "start": 20
+      }
+     ],
+     "field": "",
+     "label": "Flags: 0x2, Don't fragment",
+     "len": 2,
+     "level": 0,
+     "start": 20
+    },
+    {
+     "field": "ip.frag_offset",
+     "filter": "ip.frag_offset == 0",
+     "label": "Fragment offset: 0",
+     "len": 2,
+     "level": 0,
+     "start": 20
+    },
+    {
+     "field": "ip.ttl",
+     "filter": "ip.ttl == 64",
+     "label": "Time to live: 64",
+     "len": 1,
+     "level": 0,
+     "start": 22
+    },
+    {
+     "field": "ip.proto",
+     "filter": "ip.proto == 6",
+     "label": "Protocol: TCP (6)",
+     "len": 1,
+     "level": 0,
+     "start": 23
+    },
+    {
+     "field": "ip.checksum",
+     "filter": "ip.checksum == 31550",
+     "label": "Header checksum: 0x7b3e",
+     "len": 2,
+     "level": 0,
+     "start": 24
+    },
+    {
+     "field": "ip.src",
+     "filter": "ip.src == 192.168.1.20",
+     "label": "Source address: 192.168.1.20",
+     "len": 4,
+     "level": 0,
+     "start": 26
+    },
+    {
+     "field": "ip.dst",
+     "filter": "ip.dst == 140.82.112.3",
+     "label": "Destination address: 140.82.112.3",
+     "len": 4,
+     "level": 0,
+     "start": 30
+    }
+   ],
+   "field": "ip",
+   "filter": "ip",
+   "label": "Internet Protocol Version 4, Src: 192.168.1.20, Dst: 140.82.112.3",
+   "len": 20,
+   "level": 0,
+   "start": 14
+  },
+  {
+   "children": [
+    {
+     "field": "tcp.srcport",
+     "filter": "tcp.srcport == 51844",
+     "label": "Source port: 51844",
+     "len": 2,
+     "level": 0,
+     "start": 34
+    },
+    {
+     "field": "tcp.dstport",
+     "filter": "tcp.dstport == 443",
+     "label": "Destination port: 443",
+     "len": 2,
+     "level": 0,
+     "start": 36
+    },
+    {
+     "field": "tcp.stream",
+     "filter": "tcp.stream == 0",
+     "label": "[Stream index: 0]",
+     "len": 0,
+     "level": 0,
+     "start": 34
+    },
+    {
+     "field": "tcp.len",
+     "filter": "tcp.len == 227",
+     "label": "[TCP segment length: 227]",
+     "len": 0,
+     "level": 0,
+     "start": 34
+    },
+    {
+     "field": "tcp.seq",
+     "filter": "tcp.seq == 1",
+     "label": "Sequence number: 1    (relative)",
+     "len": 4,
+     "level": 0,
+     "start": 38
+    },
+    {
+     "field": "tcp.seq_raw",
+     "filter": "tcp.seq_raw == 1804410626",
+     "label": "Sequence number (raw): 1804410626",
+     "len": 4,
+     "level": 0,
+     "start": 38
+    },
+    {
+     "field": "tcp.nxtseq",
+     "filter": "tcp.nxtseq == 228",
+     "label": "[Next sequence number: 228]",
+     "len": 0,
+     "level": 0,
+     "start": 34
+    },
+    {
+     "field": "tcp.ack",
+     "filter": "tcp.ack == 1",
+     "label": "Acknowledgment number: 1    (relative)",
+     "len": 4,
+     "level": 0,
+     "start": 42
+    },
+    {
+     "field": "tcp.ack_raw",
+     "filter": "tcp.ack_raw == 255499349",
+     "label": "Acknowledgment number (raw): 255499349",
+     "len": 4,
+     "level": 0,
+     "start": 42
+    },
+    {
+     "field": "tcp.hdr_len",
+     "filter": "tcp.hdr_len == 32",
+     "label": "Header length: 32 bytes",
+     "len": 1,
+     "level": 0,
+     "start": 46
+    },
+    {
+     "field": "tcp.flags",
+     "filter": "tcp.flags == 24",
+     "label": "Flags: 0x018 (PSH, ACK)",
+     "len": 2,
+     "level": 0,
+     "start": 46
+    },
+    {
+     "children": [
+      {
+       "field": "tcp.flags.urg",
+       "filter": "tcp.flags.urg == 0",
+       "label": "Urgent: Not set",
+       "len": 1,
+       "level": 0,
+       "start": 47
+      },
+      {
+       "field": "tcp.flags.ack",
+       "filter": "tcp.flags.ack == 1",
+       "label": "Acknowledgment: Set",
+       "len": 1,
+       "level": 0,
+       "start": 47
+      },
+      {
+       "field": "tcp.flags.push",
+       "filter": "tcp.flags.push == 1",
+       "label": "Push: Set",
+       "len": 1,
+       "level": 0,
+       "start": 47
+      },
+      {
+       "field": "tcp.flags.reset",
+       "filter": "tcp.flags.reset == 0",
+       "label": "Reset: Not set",
+       "len": 1,
+       "level": 0,
+       "start": 47
+      },
+      {
+       "field": "tcp.flags.syn",
+       "filter": "tcp.flags.syn == 0",
+       "label": "Syn: Not set",
+       "len": 1,
+       "level": 0,
+       "start": 47
+      },
+      {
+       "field": "tcp.flags.fin",
+       "filter": "tcp.flags.fin == 0",
+       "label": "Fin: Not set",
+       "len": 1,
+       "level": 0,
+       "start": 47
+      }
+     ],
+     "field": "",
+     "label": "Flag bits",
+     "len": 2,
+     "level": 0,
+     "start": 46
+    },
+    {
+     "field": "tcp.window_size_value",
+     "filter": "tcp.window_size_value == 502",
+     "label": "Window: 502",
+     "len": 2,
+     "level": 0,
+     "start": 48
+    },
+    {
+     "field": "tcp.checksum",
+     "filter": "tcp.checksum == 39500",
+     "label": "Checksum: 0x9a4c",
+     "len": 2,
+     "level": 0,
+     "start": 50
+    },
+    {
+     "field": "tcp.urgent_pointer",
+     "filter": "tcp.urgent_pointer == 0",
+     "label": "Urgent pointer: 0",
+     "len": 2,
+     "level": 0,
+     "start": 52
+    },
+    {
+     "children": [
+      {
+       "field": "tcp.options.timestamp.tsval",
+       "filter": "tcp.options.timestamp.tsval == 725389575",
+       "label": "Timestamps: TSval 725389575, TSecr 2383561818",
+       "len": 10,
+       "level": 0,
+       "start": 56
+      }
+     ],
+     "field": "",
+     "label": "Options (12 bytes)",
+     "len": 12,
+     "level": 0,
+     "start": 54
+    }
+   ],
+   "field": "tcp",
+   "filter": "tcp",
+   "label": "Transmission Control Protocol, Src Port: 51844, Dst Port: 443, Seq: 1, Ack: 1, Len: 227",
+   "len": 32,
+   "level": 0,
+   "start": 34
+  },
+  {
+   "children": [
+    {
+     "children": [
+      {
+       "field": "tls.record.content_type",
+       "filter": "tls.record.content_type == 22",
+       "label": "Content type: Handshake (22)",
+       "len": 1,
+       "level": 0,
+       "start": 66
+      },
+      {
+       "field": "tls.record.version",
+       "filter": "tls.record.version == 769",
+       "label": "Version: TLSv1.0 (0x0301)",
+       "len": 2,
+       "level": 0,
+       "start": 67
+      },
+      {
+       "field": "tls.record.length",
+       "filter": "tls.record.length == 222",
+       "label": "Length: 222",
+       "len": 2,
+       "level": 0,
+       "start": 69
+      },
+      {
+       "children": [
+        {
+         "field": "tls.handshake.type",
+         "filter": "tls.handshake.type == 1",
+         "label": "Handshake type: Client Hello (1)",
+         "len": 1,
+         "level": 0,
+         "start": 71
+        },
+        {
+         "field": "tls.handshake.length",
+         "filter": "tls.handshake.length == 218",
+         "label": "Length: 218",
+         "len": 3,
+         "level": 0,
+         "start": 72
+        },
+        {
+         "field": "tls.handshake.version",
+         "filter": "tls.handshake.version == 771",
+         "label": "Version: TLSv1.2 (0x0303)",
+         "len": 2,
+         "level": 0,
+         "start": 75
+        },
+        {
+         "field": "tls.handshake.random",
+         "filter": "tls.handshake.random contains 05:4e:97:e0:29:72:bb:04:4d:96:df:28:71:ba:03:4c:95:de:27:70:b9:02:4b:94:dd:26:6f:b8:01:4a:93:dc",
+         "label": "Random: (32 bytes)",
+         "len": 32,
+         "level": 0,
+         "start": 77
+        },
+        {
+         "field": "tls.handshake.session_id_length",
+         "filter": "tls.handshake.session_id_length == 32",
+         "label": "Session ID length: 32",
+         "len": 1,
+         "level": 0,
+         "start": 109
+        },
+        {
+         "children": [
+          {
+           "field": "tls.handshake.ciphersuite",
+           "filter": "tls.handshake.ciphersuite == 4865",
+           "label": "Cipher suite: TLS_AES_128_GCM_SHA256 (0x1301)",
+           "len": 2,
+           "level": 0,
+           "start": 144
+          },
+          {
+           "field": "tls.handshake.ciphersuite",
+           "filter": "tls.handshake.ciphersuite == 4867",
+           "label": "Cipher suite: TLS_CHACHA20_POLY1305_SHA256 (0x1303)",
+           "len": 2,
+           "level": 0,
+           "start": 146
+          },
+          {
+           "field": "tls.handshake.ciphersuite",
+           "filter": "tls.handshake.ciphersuite == 4866",
+           "label": "Cipher suite: TLS_AES_256_GCM_SHA384 (0x1302)",
+           "len": 2,
+           "level": 0,
+           "start": 148
+          },
+          {
+           "field": "tls.handshake.ciphersuite",
+           "filter": "tls.handshake.ciphersuite == 49195",
+           "label": "Cipher suite: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 (0xc02b)",
+           "len": 2,
+           "level": 0,
+           "start": 150
+          },
+          {
+           "field": "tls.handshake.ciphersuite",
+           "filter": "tls.handshake.ciphersuite == 49199",
+           "label": "Cipher suite: TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (0xc02f)",
+           "len": 2,
+           "level": 0,
+           "start": 152
+          },
+          {
+           "field": "tls.handshake.ciphersuite",
+           "filter": "tls.handshake.ciphersuite == 52393",
+           "label": "Cipher suite: TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256 (0xcca9)",
+           "len": 2,
+           "level": 0,
+           "start": 154
+          },
+          {
+           "field": "tls.handshake.ciphersuite",
+           "filter": "tls.handshake.ciphersuite == 52392",
+           "label": "Cipher suite: TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 (0xcca8)",
+           "len": 2,
+           "level": 0,
+           "start": 156
+          },
+          {
+           "field": "tls.handshake.ciphersuite",
+           "filter": "tls.handshake.ciphersuite == 49196",
+           "label": "Cipher suite: TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 (0xc02c)",
+           "len": 2,
+           "level": 0,
+           "start": 158
+          }
+         ],
+         "field": "",
+         "label": "Cipher suites (8 suites)",
+         "len": 18,
+         "level": 0,
+         "start": 142
+        },
+        {
+         "children": [
+          {
+           "field": "tls.handshake.extensions_server_name",
+           "filter": "tls.handshake.extensions_server_name == \"github.com\"",
+           "label": "Extension: server_name: github.com",
+           "len": 10,
+           "level": 0,
+           "start": 173
+          },
+          {
+           "field": "tls.handshake.extension.type",
+           "filter": "tls.handshake.extension.type == 23",
+           "label": "Extension: extended_master_secret (len=0)",
+           "len": 4,
+           "level": 0,
+           "start": 183
+          },
+          {
+           "field": "tls.handshake.extension.type",
+           "filter": "tls.handshake.extension.type == 65281",
+           "label": "Extension: renegotiation_info (len=1)",
+           "len": 5,
+           "level": 0,
+           "start": 187
+          },
+          {
+           "field": "tls.handshake.extension.type",
+           "filter": "tls.handshake.extension.type == 10",
+           "label": "Extension: supported_groups (len=8)",
+           "len": 12,
+           "level": 0,
+           "start": 192
+          },
+          {
+           "field": "",
+           "label": "Extension: ALPN: h2, http/1.1",
+           "len": 18,
+           "level": 0,
+           "start": 204
+          },
+          {
+           "field": "tls.handshake.extension.type",
+           "filter": "tls.handshake.extension.type == 13",
+           "label": "Extension: signature_algorithms (len=10)",
+           "len": 14,
+           "level": 0,
+           "start": 222
+          },
+          {
+           "field": "",
+           "label": "Extension: supported_versions: TLSv1.3, TLSv1.2",
+           "len": 9,
+           "level": 0,
+           "start": 236
+          },
+          {
+           "field": "tls.handshake.extension.type",
+           "filter": "tls.handshake.extension.type == 45",
+           "label": "Extension: psk_key_exchange_modes (len=2)",
+           "len": 6,
+           "level": 0,
+           "start": 245
+          },
+          {
+           "field": "tls.handshake.extension.type",
+           "filter": "tls.handshake.extension.type == 51",
+           "label": "Extension: key_share (len=38)",
+           "len": 42,
+           "level": 0,
+           "start": 251
+          }
+         ],
+         "field": "",
+         "label": "Extensions (9)",
+         "len": 131,
+         "level": 0,
+         "start": 162
+        }
+       ],
+       "field": "",
+       "label": "Handshake Protocol: Client Hello",
+       "len": 222,
+       "level": 0,
+       "start": 71
+      }
+     ],
+     "field": "",
+     "label": "TLSv1.0 Record Layer: Handshake (222 bytes)",
+     "len": 227,
+     "level": 0,
+     "start": 66
+    }
+   ],
+   "field": "tls",
+   "filter": "tls",
+   "label": "Transport Layer Security",
+   "len": 227,
+   "level": 0,
+   "start": 66
+  }
+ ]
+}

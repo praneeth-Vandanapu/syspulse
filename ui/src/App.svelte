@@ -82,6 +82,12 @@
   const SOON: Record<string, { icon: string; title: string; phase: string; features: string[] }> = {
   };
 
+  // Browser demo mode only (never in the real app): "?page=<id>" opens a page
+  // directly and "&shot" hides the demo badge - used for README screenshots.
+  const demoParams = !isTauri ? new URLSearchParams(location.search) : null;
+  const screenshotMode = !!demoParams?.has("shot");
+  if (demoParams?.get("page")) app.page = demoParams.get("page")!;
+
   onMount(() => {
     app.start();
     // Backend can ask for a page (e.g. back to the recorder after a recording).
@@ -125,7 +131,7 @@
           <div class="muted">Up {uptime}</div>
         </div>
       {/if}
-      {#if !isTauri}<div class="demo">Demo data (browser mode)</div>{/if}
+      {#if !isTauri && !screenshotMode}<div class="demo">Demo data (browser mode)</div>{/if}
     </div>
   </aside>
 

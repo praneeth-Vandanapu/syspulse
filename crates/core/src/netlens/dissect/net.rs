@@ -912,7 +912,9 @@ fn tcp(cx: &mut Cx, off: usize, end: usize) {
     });
 
     if plen > 0 {
-        cx.add("tcp.payload", Val::Raw, pstart, plen, |_| format!("TCP payload ({plen} bytes)"));
+        // Filterable (tcp.payload contains ...) but not a separate tree line:
+        // the bytes belong to the application layer shown below.
+        cx.hidden("tcp.payload", Val::Raw, pstart, plen);
         let src = cx.out.facts.src;
         let dst = cx.out.facts.dst;
         tcp_app(cx, sp, dp, src, dst, pstart, end, &tags);
