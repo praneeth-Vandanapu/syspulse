@@ -79,8 +79,7 @@ These are the known limitations of version 0.7, planned to be fixed in a later r
 | Admin password | Polkit remembers the password for a few minutes after an admin action (`auth_admin_keep`), like `sudo` | Lock the screen when leaving the PC |
 | Web interface hardening | Commands are not yet restricted per window, and some file-saving commands accept a path from the interface. No exploit is known (the interface never renders untrusted text as HTML); this is defence in depth | — |
 
-Please report security problems privately (see `SECURITY.md` once published, or open a GitHub
-security advisory) rather than in a public issue.
+Please report security problems privately, as described in [SECURITY.md](SECURITY.md), rather than in a public issue.
 
 ## Speed test between two PCs
 
